@@ -1,8 +1,10 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:marquee/marquee.dart';
 import 'package:tarbiyauz/core/extension/extensions.dart';
+import 'package:tarbiyauz/core/routes/routes.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
@@ -176,10 +178,15 @@ class _CustomAppBarState extends State<CustomAppBar> {
         ),
         child: Row(
           children: [
-            Icon(Icons.search, color: Colors.grey[600]),
+            IconButton(
+                onPressed: () {},
+                icon: Icon(Icons.search, color: Colors.grey[600])),
             const SizedBox(width: 8),
             Expanded(
               child: TextFormField(
+                onFieldSubmitted: (value) {
+                  context.go(Routes.searchResult);
+                },
                 controller: _searchController,
                 decoration: const InputDecoration(
                   hintText: 'Search...',

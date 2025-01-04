@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors, avoid_web_libraries_in_flutter
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:html' as html;
@@ -10,8 +12,7 @@ import 'package:tarbiyauz/core/constants/app_dimens.dart';
 class AboutVideoNewsScreen extends StatefulWidget {
   final String videoUrl;
 
-  const AboutVideoNewsScreen({Key? key, required this.videoUrl})
-      : super(key: key);
+  const AboutVideoNewsScreen({super.key, required this.videoUrl});
 
   @override
   _AboutVideoNewsScreenState createState() => _AboutVideoNewsScreenState();

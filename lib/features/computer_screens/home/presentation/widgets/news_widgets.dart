@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tarbiyauz/core/constants/app_dimens.dart';
+import 'package:tarbiyauz/core/routes/routes.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
 class NewsWidgets extends StatelessWidget {
@@ -9,7 +11,7 @@ class NewsWidgets extends StatelessWidget {
   Widget build(BuildContext context) {
     return ZoomTapAnimation(
       onTap: () {
-        Navigator.pushNamed(context, '/aboutVideoNews');
+        context.go(Routes.aboutNewsScreen);
         // Navigator.push(
         //     context,
         //     MaterialPageRoute(

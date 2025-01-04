@@ -327,9 +327,9 @@
     },
     {
       "name": "freezed",
-      "rootUri": "file:///Users/jamshidmirzo/.pub-cache/hosted/pub.dev/freezed-2.5.7",
+      "rootUri": "file:///Users/jamshidmirzo/.pub-cache/hosted/pub.dev/freezed-3.0.0-0.0.dev",
       "packageUri": "lib/",
-      "languageVersion": "3.0"
+      "languageVersion": "3.5"
     },
     {
       "name": "freezed_annotation",
@@ -354,6 +354,12 @@
       "rootUri": "file:///Users/jamshidmirzo/.pub-cache/hosted/pub.dev/glob-2.1.2",
       "packageUri": "lib/",
       "languageVersion": "2.19"
+    },
+    {
+      "name": "go_router",
+      "rootUri": "file:///Users/jamshidmirzo/.pub-cache/hosted/pub.dev/go_router-14.6.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
     },
     {
       "name": "graphs",
@@ -405,9 +411,9 @@
     },
     {
       "name": "json_serializable",
-      "rootUri": "file:///Users/jamshidmirzo/.pub-cache/hosted/pub.dev/json_serializable-6.9.0",
+      "rootUri": "file:///Users/jamshidmirzo/.pub-cache/hosted/pub.dev/json_serializable-6.9.2",
       "packageUri": "lib/",
-      "languageVersion": "3.5"
+      "languageVersion": "3.6"
     },
     {
       "name": "leak_tracker",
@@ -621,9 +627,9 @@
     },
     {
       "name": "source_gen",
-      "rootUri": "file:///Users/jamshidmirzo/.pub-cache/hosted/pub.dev/source_gen-1.5.0",
+      "rootUri": "file:///Users/jamshidmirzo/.pub-cache/hosted/pub.dev/source_gen-2.0.0",
       "packageUri": "lib/",
-      "languageVersion": "3.0"
+      "languageVersion": "3.6"
     },
     {
       "name": "source_helper",
@@ -842,7 +848,7 @@
       "languageVersion": "3.4"
     }
   ],
-  "generated": "2024-12-29T19:33:04.756080Z",
+  "generated": "2025-01-04T13:38:46.468748Z",
   "generator": "pub",
   "generatorVersion": "3.6.0",
   "flutterRoot": "file:///Users/jamshidmirzo/Desktop/FLUTTER/sdk",

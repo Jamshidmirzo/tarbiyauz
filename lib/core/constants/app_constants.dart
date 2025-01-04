@@ -15,3 +15,4 @@ class AppConstants {
   static const String sharedToCurrent = 'CurrentWeather';
   static const String sharedToCurrency = 'Currency';
 }
+
