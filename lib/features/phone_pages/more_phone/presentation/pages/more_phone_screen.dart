@@ -124,24 +124,23 @@ class MorePhoneScreen extends StatelessWidget {
   }
 }
 
- // const SliverToBoxAdapter(
-            //   child: Text(
-            //     "Hudular boyicha",
-            //     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-            //   ),
-            // ),
-            // SliverToBoxAdapter(
-            //   child: 20.hs(),
-            // ),
-            // SliverGrid(
-            //   delegate: SliverChildBuilderDelegate(
-            //       childCount: viloyatlar.length, (context, index) {
-            //     return RegionsWidget(text: viloyatlar[index]);
-            //   }),
-            //   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            //       crossAxisCount: 2,
-            //       childAspectRatio: 3.5,
-            //       crossAxisSpacing: 10,
-            //       mainAxisSpacing: 10),
-            // ),
-         
+// const SliverToBoxAdapter(
+//   child: Text(
+//     "Hudular boyicha",
+//     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+//   ),
+// ),
+// SliverToBoxAdapter(
+//   child: 20.hs(),
+// ),
+// SliverGrid(
+//   delegate: SliverChildBuilderDelegate(
+//       childCount: viloyatlar.length, (context, index) {
+//     return RegionsWidget(text: viloyatlar[index]);
+//   }),
+//   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+//       crossAxisCount: 2,
+//       childAspectRatio: 3.5,
+//       crossAxisSpacing: 10,
+//       mainAxisSpacing: 10),
+// ),

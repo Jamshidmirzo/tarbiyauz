@@ -1,11 +1,16 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tarbiyauz/core/constants/app_constants.dart';
 import 'package:tarbiyauz/core/constants/app_dimens.dart';
 import 'package:tarbiyauz/core/extension/extensions.dart';
+import 'package:tarbiyauz/features/computer_screens/home/presentation/bloc/bloc/home_bloc.dart';
 import 'package:tarbiyauz/features/computer_screens/home/presentation/widgets/list_view_widgets.dart';
 import 'package:tarbiyauz/features/computer_screens/home/presentation/widgets/news_widgets.dart';
 
-class IsComputerWidget extends StatelessWidget {
+class IsComputerWidget extends StatefulWidget {
   final ScrollController scrollController;
   const IsComputerWidget({
     super.key,
@@ -13,16 +18,27 @@ class IsComputerWidget extends StatelessWidget {
   });
 
   @override
+  State<IsComputerWidget> createState() => _IsComputerWidgetState();
+}
+
+class _IsComputerWidgetState extends State<IsComputerWidget> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<HomeBloc>().add(GetAllTwitesEvent());
+  }
+
+  @override
   Widget build(BuildContext context) {
     double fontSize = MediaQuery.of(context).size.width * 0.015;
     double screenWidth = MediaQuery.of(context).size.width;
-    
+
     return Row(
       children: [
         Expanded(
           flex: 3,
           child: CustomScrollView(
-            controller: scrollController,
+            controller: widget.scrollController,
             slivers: [
               SliverToBoxAdapter(
                   child: Container(
@@ -90,39 +106,73 @@ class IsComputerWidget extends StatelessWidget {
                 ),
               )),
               const SliverPadding(padding: EdgeInsets.only(top: 20)),
-              screenWidth <= 1060
-                  ? SliverGrid(
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        mainAxisSpacing: 20,
-                        crossAxisSpacing: 20,
-                        childAspectRatio: 1.5,
-                      ),
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) => const NewsWidgets(),
-                        childCount: 10,
-                      ),
-                    )
-                  : SliverGrid(
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        mainAxisSpacing: 20,
-                        crossAxisSpacing: 20,
-                        childAspectRatio: 1.5,
-                      ),
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) => const NewsWidgets(),
-                        childCount: 10,
-                      ),
-                    ),
+              BlocBuilder<HomeBloc, HomeState>(
+                builder: (context, state) {
+                  log(state.toString());
+
+                  if (state.status == Status.Loading) {
+                    return const SliverToBoxAdapter(
+                      child: Center(child: CircularProgressIndicator()),
+                    );
+                  }
+
+                  if (state.status == Status.Error) {
+                    return const SliverToBoxAdapter(
+                      child: Center(
+                          child:
+                              Text('Failed to load tweets. Please try again.')),
+                    );
+                  }
+
+                  if (state.status == Status.Success) {
+                    final twites = state.twites ?? [];
+                    if (twites.isEmpty) {
+                      return const SliverToBoxAdapter(
+                        child: Center(child: Text('No tweets available.')),
+                      );
+                    }
+
+                    return screenWidth <= 1060
+                        ? SliverGrid(
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: screenWidth <= 1060 ? 2 : 3,
+                              mainAxisSpacing: 20,
+                              crossAxisSpacing: 20,
+                              childAspectRatio: 1.5,
+                            ),
+                            delegate: SliverChildBuilderDelegate(
+                              (context, index) =>
+                                  NewsWidgets(twitModel: twites[index]),
+                              childCount: twites.length,
+                            ),
+                          )
+                        : SliverGrid(
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 3,
+                              mainAxisSpacing: 20,
+                              crossAxisSpacing: 20,
+                              childAspectRatio: 1.5,
+                            ),
+                            delegate: SliverChildBuilderDelegate(
+                              (context, index) {
+                                return NewsWidgets(twitModel: twites[index]);
+                              },
+                              childCount: twites.length,
+                            ),
+                          );
+                  }
+
+                  return const SizedBox.shrink();
+                },
+              )
             ],
           ),
         ),
         20.ws(),
         Flexible(
-          child: ListViewWidgets(scrollController: scrollController),
+          child: ListViewWidgets(scrollController: widget.scrollController),
         ),
       ],
     );

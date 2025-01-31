@@ -1,14 +1,24 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tarbiyauz/core/constants/app_dimens.dart';
-import 'package:tarbiyauz/core/routes/routes.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
+import 'package:tarbiyauz/core/constants/app_dimens.dart';
+import 'package:tarbiyauz/core/routes/routes.dart';
+import 'package:tarbiyauz/features/computer_screens/home/data/model/twit_model.dart';
+
 class NewsWidgets extends StatelessWidget {
-  const NewsWidgets({super.key});
+  final TwitModel twitModel;
+  const NewsWidgets({
+    Key? key,
+    required this.twitModel,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    log(twitModel.photos.first.photoUrl);
     return ZoomTapAnimation(
       onTap: () {
         context.go(Routes.aboutNewsScreen);
@@ -38,7 +48,10 @@ class NewsWidgets extends StatelessWidget {
                   top: Radius.circular(AppDimens.BORDER_RADIUS_15),
                 ),
                 child: Image.network(
-                  'https://yuz.uz/imageproxy/1200x/https://yuz.uz/file/news/c1804423a548ba949fb7d6d0873aba87.jpg',
+                  (twitModel.photos.isNotEmpty &&
+                          twitModel.photos.first.photoUrl.isNotEmpty)
+                      ? twitModel.photos.first.photoUrl
+                      : 'https://yuz.uz/imageproxy/1200x/https://yuz.uz/file/news/c1804423a548ba949fb7d6d0873aba87.jpg',
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
                     return Container(
@@ -49,11 +62,11 @@ class NewsWidgets extends StatelessWidget {
                 ),
               ),
             ),
-            const Expanded(
+            Expanded(
               child: Padding(
                 padding: EdgeInsets.all(AppDimens.PADDING_8),
                 child: Text(
-                  'Mollit irure nulla ut incididunt occaecat eu ullamco sit. Cillum amet cillum aliqua ad sunt commodo laborum occaecat in anim sit tempor labore sit.',
+                  twitModel.texts,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                   ),

@@ -1,8 +1,8 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tarbiyauz/core/currency/presentation/blocs/bloc/converter_bloc.dart';
 import 'package:tarbiyauz/core/routes/app_routes.dart';
+import 'package:tarbiyauz/features/computer_screens/home/presentation/bloc/bloc/home_bloc.dart';
 import 'service_locator.dart' as di;
 
 void main(List<String> args) async {
@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => di.sl<ConverterBloc>(),
+          create: (context) => di.sl<HomeBloc>(),
         ),
       ],
       child: AdaptiveTheme(

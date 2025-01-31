@@ -1,6 +1,6 @@
-part of 'home_bloc.dart';
+// part of 'home_bloc.dart';
 
-@freezed
-class HomeEvent with _$HomeEvent {
-  const factory HomeEvent.getNews() = _getNews;
-}
+// // Define HomeEvent
+// abstract class HomeEvent {}
+
+// class GetAllTwitesEvent extends HomeEvent {}

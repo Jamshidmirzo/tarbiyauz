@@ -59,7 +59,6 @@ class _AppbarPhoneWidgetState extends State<AppbarPhoneWidget> {
 
   @override
   Widget build(BuildContext context) {
-
     double fontSize = MediaQuery.of(context).size.width * 0.015;
 
     return ValueListenableBuilder<Color>(
@@ -68,7 +67,6 @@ class _AppbarPhoneWidgetState extends State<AppbarPhoneWidget> {
         return SliverAppBar(
           backgroundColor: color,
           actions: [
-           
             ZoomTapAnimation(
               onTap: () {
                 openBottomForLang(context);

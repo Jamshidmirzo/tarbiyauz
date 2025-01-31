@@ -44,7 +44,6 @@ class CategoriesWidget extends StatelessWidget {
             ],
           ),
         ),
-      
         10.hs(),
       ],
     );

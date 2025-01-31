@@ -39,9 +39,9 @@
     },
     {
       "name": "bloc",
-      "rootUri": "file:///Users/jamshidmirzo/.pub-cache/hosted/pub.dev/bloc-8.1.4",
+      "rootUri": "file:///Users/jamshidmirzo/.pub-cache/hosted/pub.dev/bloc-9.0.0",
       "packageUri": "lib/",
-      "languageVersion": "2.12"
+      "languageVersion": "2.14"
     },
     {
       "name": "boolean_selector",
@@ -249,9 +249,9 @@
     },
     {
       "name": "flutter_bloc",
-      "rootUri": "file:///Users/jamshidmirzo/.pub-cache/hosted/pub.dev/flutter_bloc-8.1.6",
+      "rootUri": "file:///Users/jamshidmirzo/.pub-cache/hosted/pub.dev/flutter_bloc-9.0.0",
       "packageUri": "lib/",
-      "languageVersion": "2.12"
+      "languageVersion": "2.14"
     },
     {
       "name": "flutter_inappwebview",
@@ -783,7 +783,7 @@
     },
     {
       "name": "web_socket_channel",
-      "rootUri": "file:///Users/jamshidmirzo/.pub-cache/hosted/pub.dev/web_socket_channel-3.0.1",
+      "rootUri": "file:///Users/jamshidmirzo/.pub-cache/hosted/pub.dev/web_socket_channel-3.0.2",
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
@@ -848,10 +848,10 @@
       "languageVersion": "3.4"
     }
   ],
-  "generated": "2025-01-04T13:38:46.468748Z",
+  "generated": "2025-01-27T19:50:01.935794Z",
   "generator": "pub",
-  "generatorVersion": "3.6.0",
+  "generatorVersion": "3.6.1",
   "flutterRoot": "file:///Users/jamshidmirzo/Desktop/FLUTTER/sdk",
-  "flutterVersion": "3.27.1",
+  "flutterVersion": "3.27.3",
   "pubCache": "file:///Users/jamshidmirzo/.pub-cache"
 }

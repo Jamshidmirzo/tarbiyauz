@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors, avoid_web_libraries_in_flutter
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:html' as html;
@@ -126,9 +124,9 @@ class _AboutVideoNewsScreenState extends State<AboutVideoNewsScreen> {
                                     MediaQuery.of(context).size.height * 0.2,
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: const Text(
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text(
                                 'Short news description',
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 18),

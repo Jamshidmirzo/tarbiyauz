@@ -23,7 +23,7 @@ class GridViewWidgets extends StatelessWidget {
             childAspectRatio: 2,
           ),
           delegate: SliverChildBuilderDelegate(
-            (context, index) => const NewsWidgets(),
+            (context, index) =>  Container(),
             childCount: 26,
           ),
         ),

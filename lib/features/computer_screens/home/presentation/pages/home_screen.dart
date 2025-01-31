@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tarbiyauz/core/constants/app_dimens.dart';
-import 'package:tarbiyauz/core/currency/presentation/blocs/bloc/converter_bloc.dart';
 import 'package:tarbiyauz/features/computer_screens/home/presentation/widgets/appbar_widget.dart';
 import 'package:tarbiyauz/features/computer_screens/home/presentation/widgets/drawer_widget.dart';
 import 'package:tarbiyauz/features/computer_screens/home/presentation/widgets/is_computer_widget.dart';
@@ -20,16 +19,13 @@ class _NewsScreenState extends State<NewsScreen> {
 
   void _toggleDrawer() {
     print('234r5t6yuiuytrewq  ');
-    context
-        .read<ConverterBloc>()
-        .add(const ConverterEvent.getNotNullCurrency());
+
     _scaffoldKey.currentState?.openEndDrawer();
   }
 
   @override
   void initState() {
     super.initState();
-    context.read<ConverterBloc>().add(const ConverterEvent.getCurrency());
   }
 
   @override

@@ -33,6 +33,5 @@ class RegionsWidget extends StatelessWidget {
         ),
       ),
     );
-    
   }
 }

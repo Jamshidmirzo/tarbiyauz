@@ -155,7 +155,6 @@ class _AboutNewsScreenState extends State<AboutNewsScreen> {
                   ),
                 ),
               ),
-             
               SliverToBoxAdapter(
                 child: SizedBox(
                   height: screenHeight * 0.1,

@@ -35,8 +35,7 @@ class _BottomSheetForModeState extends State<BottomSheetForMode> {
               leading: const Icon(CupertinoIcons.device_phone_portrait),
               title: const Text(
                 'Like a Syestem',
-                style:
-                    TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
             ),
           ),
@@ -57,8 +56,7 @@ class _BottomSheetForModeState extends State<BottomSheetForMode> {
               leading: const Icon(Icons.light_mode),
               title: const Text(
                 'Light mode',
-                style:
-                    TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
             ),
           ),
@@ -78,8 +76,7 @@ class _BottomSheetForModeState extends State<BottomSheetForMode> {
               leading: const Icon(Icons.dark_mode),
               title: const Text(
                 'Dark mode',
-                style:
-                    TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
             ),
           ),
