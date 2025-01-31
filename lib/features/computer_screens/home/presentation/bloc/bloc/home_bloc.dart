@@ -17,6 +17,8 @@ abstract class HomeEvent {}
 
 class GetAllTwitesEvent extends HomeEvent {}
 
+class GetLatestTwitesEvent extends HomeEvent {}
+
 // Define HomeState
 class HomeState {
   final Status status;
@@ -27,6 +29,7 @@ class HomeState {
   HomeState copyWith({
     Status? status,
     List<TwitModel>? twites,
+    List<TwitModel>? latestTwites,
   }) {
     return HomeState(
       status: status ?? this.status,
@@ -52,6 +55,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     this.searchTwitesUsecase,
   ) : super(HomeState()) {
     on<GetAllTwitesEvent>(_onGetAllTwites);
+    on<GetLatestTwitesEvent>(_onGetLatestTwites);
   }
 
   Future<void> _onGetAllTwites(
@@ -67,6 +71,22 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       ));
     }, (data) {
       emit(state.copyWith(status: Status.Success, twites: data));
+    });
+  }
+
+  Future<void> _onGetLatestTwites(
+      GetLatestTwitesEvent event, Emitter<HomeState> emit) async {
+    log('YOQILDIID');
+    emit(state.copyWith(status: Status.Loading));
+
+    final responce = await getLastTwitesUsecase(null);
+    log('Event received: $responce');
+    responce.fold((error) {
+      emit(state.copyWith(
+        status: Status.Error,
+      ));
+    }, (data) {
+      emit(state.copyWith(status: Status.Success, latestTwites: data));
     });
   }
 }
