@@ -1,13 +1,30 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first, must_be_immutable
+import 'dart:async';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lottie/lottie.dart';
+
+import 'package:tarbiyauz/core/colors/app_color.dart';
+import 'package:tarbiyauz/core/constants/app_constants.dart';
 import 'package:tarbiyauz/core/constants/app_dimens.dart';
 import 'package:tarbiyauz/core/extension/extensions.dart';
+import 'package:tarbiyauz/core/widgets/error_widget.dart';
+import 'package:tarbiyauz/core/widgets/loading_widget.dart';
+import 'package:tarbiyauz/features/computer_screens/home/data/model/twit_model.dart';
+import 'package:tarbiyauz/features/computer_screens/home/presentation/bloc/bloc/home_bloc.dart';
 import 'package:tarbiyauz/features/computer_screens/home/presentation/widgets/appbar_widget.dart';
 import 'package:tarbiyauz/features/computer_screens/home/presentation/widgets/last_news_widget.dart';
+import 'package:tarbiyauz/features/computer_screens/home/presentation/widgets/news_widgets.dart';
 import 'package:tarbiyauz/features/phone_pages/home_phone/presentation/widgets/phone_job_widget.dart';
-import 'package:tarbiyauz/core/colors/app_color.dart';
 
 class AboutNewsScreen extends StatefulWidget {
-  AboutNewsScreen({super.key});
+  String id;
+  AboutNewsScreen({
+    Key? key,
+    required this.id,
+  }) : super(key: key);
 
   @override
   State<AboutNewsScreen> createState() => _AboutNewsScreenState();
@@ -15,23 +32,51 @@ class AboutNewsScreen extends StatefulWidget {
 
 class _AboutNewsScreenState extends State<AboutNewsScreen> {
   final ScrollController scrollController = ScrollController();
+  @override
+  void initState() {
+    super.initState();
+    context.read<HomeBloc>().add(GetByIdTwitesEvent(id: widget.id));
+    context.read<HomeBloc>().add(GetMostTwitesEvent());
+    context.read<HomeBloc>().add(GetLatestTwitesEvent());
+  }
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final isSmallScreen = screenWidth < 600;
+    log('IDDD');
+    log(widget.id);
+    log('IDDD');
 
     return Scaffold(
-      appBar: isSmallScreen
-          ? null
-          : CustomAppBar(scrollController: scrollController, onPressed: () {}),
-      body: isSmallScreen
-          ? _buildSmallScreenLayout(context)
-          : _buildLargeScreenLayout(context),
-    );
+        appBar: isSmallScreen
+            ? null
+            : CustomAppBar(
+                scrollController: scrollController, onPressed: () {}),
+        body: BlocBuilder<HomeBloc, HomeState>(
+          builder: (context, state) {
+            if (state.status == Status.Error) {
+              return const CustomErrorWidget();
+            }
+            if (state.status == Status.Loading) {
+              return const LoadingWidget();
+            }
+            if (state.status == Status.Success) {
+              final twit = state.twit;
+              return twit == null
+                  ? const Center(
+                      child: Text('ERROR'),
+                    )
+                  : isSmallScreen
+                      ? _buildSmallScreenLayout(context, twit)
+                      : _buildLargeScreenLayout(context, twit);
+            }
+            return Container();
+          },
+        ));
   }
 
-  Widget _buildSmallScreenLayout(BuildContext context) {
+  Widget _buildSmallScreenLayout(BuildContext context, TwitModel twit) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
@@ -46,11 +91,11 @@ class _AboutNewsScreenState extends State<AboutNewsScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildTitleText(),
+                _buildTitleText(title: twit.title),
                 const SizedBox(height: 16),
-                _buildDescriptionText(),
+                _buildDescriptionText(texts: twit.texts),
                 const SizedBox(height: 16),
-                _buildImage(context),
+                _buildImage(context, twit.photos.first.photoUrl),
               ],
             ),
           ),
@@ -62,7 +107,18 @@ class _AboutNewsScreenState extends State<AboutNewsScreen> {
             delegate: SliverChildBuilderDelegate(
               childCount: 20,
               (context, index) {
-                return const PhoneJobWidget();
+                return PhoneJobWidget(
+                  twitModel: TwitModel(
+                    createdAt: '',
+                    id: '',
+                    userId: '',
+                    publisherFio: '',
+                    type: '',
+                    texts: '',
+                    title: '',
+                    readersCount: 0,
+                  ),
+                );
               },
             ),
           ),
@@ -71,7 +127,7 @@ class _AboutNewsScreenState extends State<AboutNewsScreen> {
     );
   }
 
-  Widget _buildLargeScreenLayout(BuildContext context) {
+  Widget _buildLargeScreenLayout(BuildContext context, TwitModel twit) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     print(Theme.of(context).brightness);
@@ -91,69 +147,78 @@ class _AboutNewsScreenState extends State<AboutNewsScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildTitleText(fontSize: 30),
+                      _buildTitleText(fontSize: 30, title: twit.title),
                       const SizedBox(height: 16),
-                      _buildDescriptionText(fontSize: 18),
+                      _buildDescriptionText(fontSize: 18, texts: twit.texts),
                       const SizedBox(height: 16),
-                      _buildImage(context),
+                      _buildImage(context, twit.photos.first.photoUrl),
                     ],
                   ),
                 ),
               ),
-              SliverToBoxAdapter(
-                child: SizedBox(
-                  height: screenHeight * 0.5,
-                  child: ListView.builder(
-                    padding: EdgeInsets.only(
-                      left: screenWidth * 0.02,
-                    ),
-                    scrollDirection: Axis.horizontal,
-                    itemCount: 10,
-                    itemBuilder: (context, index) {
-                      // return NewsWidgets();
-                      return Container(
-                        width: screenWidth * 0.3,
-                        margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).brightness == Brightness.dark
-                              ? AppColor.blueColor
-                              : Colors.white,
-                          borderRadius: BorderRadius.circular(
-                            AppDimens.BORDER_RADIUS_15,
+              BlocBuilder<HomeBloc, HomeState>(
+                builder: (context, state) {
+                  if (state.status == Status.Success) {
+                    final latest = state.latestTwites ?? [];
+                    log('FROM UI');
+                    log(latest.toString());
+                    return SliverToBoxAdapter(
+                      child: SizedBox(
+                        height: screenHeight * 0.5,
+                        child: ListView.builder(
+                          padding: EdgeInsets.only(
+                            left: screenWidth * 0.01,
                           ),
-                        ),
-                        child: Column(
-                          children: [
-                            ClipRRect(
-                              borderRadius: const BorderRadius.vertical(
-                                  top: Radius.circular(
-                                      AppDimens.BORDER_RADIUS_15),
-                                  bottom: Radius.circular(
-                                    AppDimens.BORDER_RADIUS_15,
-                                  )),
-                              child: Image.network(
-                                'https://yuz.uz/imageproxy/1200x/https://yuz.uz/file/news/c1804423a548ba949fb7d6d0873aba87.jpg',
-                                fit: BoxFit.cover,
-                                width: double.infinity,
-                                height:
-                                    MediaQuery.of(context).size.height * 0.2,
+                          scrollDirection: Axis.horizontal,
+                          itemCount: latest.length,
+                          itemBuilder: (context, index) {
+                            final last = latest[index];
+                            // return NewsWidgets(twitModel: last);
+                            return Container(
+                              width: screenWidth * 0.3,
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? AppColor.blueColor
+                                    : Colors.white,
+                                borderRadius: BorderRadius.circular(
+                                  AppDimens.BORDER_RADIUS_20,
+                                ),
                               ),
-                            ),
-                            20.hs(),
-                            const Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Text(
-                                'Tempor elit sunt est minim exercitation commodo officia id commodo ad sint enim laboris.',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 20),
+                              child: Column(
+                                children: [
+                                  SizedBox(
+                                      height: screenHeight * 0.3,
+                                      width: double.infinity,
+                                      child: _buildImageWithLoader(last)),
+                                  20.hs(),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      last.title,
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20),
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                          ],
+                            );
+                          },
                         ),
-                      );
-                    },
-                  ),
-                ),
+                      ),
+                    );
+                  }
+                  if (state.status == Status.Loading) {
+                    return const LoadingWidget();
+                  }
+                  if (state.status == Status.Error) {
+                    return const CustomErrorWidget();
+                  }
+                  return Container();
+                },
               ),
               SliverToBoxAdapter(
                 child: SizedBox(
@@ -174,12 +239,32 @@ class _AboutNewsScreenState extends State<AboutNewsScreen> {
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                 ),
               ),
-              Flexible(
-                child: ListView.builder(
-                  itemCount: 10,
-                  itemBuilder: (context, index) => const LastNewsWidget(),
-                ),
-              ),
+              BlocBuilder<HomeBloc, HomeState>(
+                builder: (context, state) {
+                  if (state.status == Status.Loading) {
+                    return const LoadingWidget();
+                  }
+                  if (state.status == Status.Error) {
+                    return const CustomErrorWidget();
+                  }
+                  if (state.status == Status.Success) {
+                    final mostViewved = state.mostVievedTwites ?? [];
+                    log('MOSTED');
+                    log(mostViewved.toString());
+                    log('MOSTED');
+
+                    return Flexible(
+                      child: ListView.builder(
+                        itemCount: mostViewved.length,
+                        itemBuilder: (context, index) => LastNewsWidget(
+                          twitModel: mostViewved[index],
+                        ),
+                      ),
+                    );
+                  }
+                  return Container();
+                },
+              )
             ],
           ),
         ),
@@ -187,9 +272,12 @@ class _AboutNewsScreenState extends State<AboutNewsScreen> {
     );
   }
 
-  Widget _buildTitleText({double fontSize = 24}) {
+  Widget _buildTitleText({
+    double fontSize = 24,
+    required String title,
+  }) {
     return Text(
-      'Voluptate ex laboris labore nostrud occaecat excepteur cillum nulla.',
+      title,
       style: TextStyle(
         fontWeight: FontWeight.bold,
         fontSize: fontSize,
@@ -197,14 +285,20 @@ class _AboutNewsScreenState extends State<AboutNewsScreen> {
     );
   }
 
-  Widget _buildDescriptionText({double fontSize = 16}) {
+  Widget _buildDescriptionText({
+    double fontSize = 16,
+    required String texts,
+  }) {
     return Text(
-      '''Yopilib ketgan YouTube kanalimda Nasaf va OKMKning 2-davradagi yil oʻyini 2:0 hisobida yakuniga yetgach, tahlil qilgan edim. (Albatta, oʻyindan oldin ham fikrlar bildirgan edim.) Oʻshanda Oybek Rustamovni jamoa oʻyinini quruvchi; himoyadan toʻpni olib, birinchi pasni beruvchi ya'ni, hujumlarni qaysi qanotdan boshlanishini belgilab beruvchi vazifasini bajaruvchi sifatida bu mavsum harakat qilayotganini aytgan edim. Eng yomoni oxirgi yillarda bunday futbolchilar har bir klubda bor va buni payqab qolgan raqiblar Qahramonni boʻgʻib qoʻyadilar. Natijada jamoa oʻyini hech boʻlmaganda, bir taym chiqmay qoladi. OKMKning Nasafga qarshi oʻyinida xuddi shunday boʻlgan edi. Birinchi taymning oʻzida Nasaf oʻyin taqdiriga nuqtani qoʻygandi. Uyoğiga toʻpni chiroyli nazorat qilgan edi. Eng yaxshi vaqt choʻzish - bu toʻpni raqibga berib, "Xudo qoʻllamasa, Bizga gol urilmaydi" deya himoyada koʻndalang turib olmoqlik emas; toʻpni nazorat qilish, xolos. Xullas, yozsam, gap koʻp... Oʻsha tahlil Mening eng yaxshi tahlillarimdan boʻlgan edi. Koʻpchilik obunachilar maqtashgandi... Jamoasining muhim oʻyinchisi boʻlib, asosiy ishni qilib yurgan Oybek Rustamov OKMKni tark etib, Qoʻqonga ketibdi. Bu xabar Meni judayam xursand qildi. Oybek bu mavsum faoliyatidagi eng nurli davrini o'tqizdi. Qoʻqonning maqsadi tayin - bu mavsum Superligada qolmoqlik! Oxirgi oʻrinni olmasa, bas. Qolishi mumkin. Oxirgi oʻrinda Shoʻrtanni koʻrmoqdaman. \n\n@Anvarstern''',
+      texts,
       style: TextStyle(fontSize: fontSize),
     );
   }
 
-  Widget _buildImage(BuildContext context) {
+  Widget _buildImage(
+    BuildContext context,
+    String photoUrl,
+  ) {
     return ClipRRect(
       borderRadius: const BorderRadius.vertical(
           top: Radius.circular(AppDimens.BORDER_RADIUS_15),
@@ -212,11 +306,59 @@ class _AboutNewsScreenState extends State<AboutNewsScreen> {
             AppDimens.BORDER_RADIUS_15,
           )),
       child: Image.network(
-        'https://yuz.uz/imageproxy/1200x/https://yuz.uz/file/news/c1804423a548ba949fb7d6d0873aba87.jpg',
+        photoUrl,
         fit: BoxFit.cover,
         width: double.infinity,
         height: MediaQuery.of(context).size.height * 0.8,
       ),
     );
   }
+}
+
+Widget _buildImageWithLoader(TwitModel twitModel) {
+  return FutureBuilder(
+    future: _preloadImage(twitModel.photos.isNotEmpty &&
+            twitModel.photos.first.photoUrl.isNotEmpty
+        ? twitModel.photos.first.photoUrl
+        : 'https://yuz.uz/imageproxy/1200x/https://yuz.uz/file/news/c1804423a548ba949fb7d6d0873aba87.jpg'),
+    builder: (context, AsyncSnapshot<ImageProvider> snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return Center(
+          child: Lottie.asset(
+            'assets/lottie/loading.json',
+            width: 30,
+            height: 30,
+          ),
+        );
+      } else if (snapshot.hasError) {
+        return Container(
+          color: Colors.grey,
+          child: const Center(child: Icon(Icons.error, size: 20)),
+        );
+      } else {
+        return Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            image: DecorationImage(image: snapshot.data!, fit: BoxFit.cover),
+          ),
+          // child: Image(
+          //   image: ,
+          //   width: double.infinity,
+          //   height: double.infinity,
+          //   fit: BoxFit.cover,
+          // ),
+        );
+      }
+    },
+  );
+}
+
+/// Preloads Image to avoid flickering
+Future<ImageProvider> _preloadImage(String url) async {
+  final image = NetworkImage(url);
+  final completer = Completer<void>();
+  final listener = ImageStreamListener((_, __) => completer.complete());
+  image.resolve(const ImageConfiguration()).addListener(listener);
+  await completer.future;
+  return image;
 }

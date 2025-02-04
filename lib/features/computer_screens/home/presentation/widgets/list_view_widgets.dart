@@ -2,14 +2,17 @@
 import 'package:flutter/material.dart';
 
 import 'package:tarbiyauz/core/constants/app_dimens.dart';
+import 'package:tarbiyauz/features/computer_screens/home/data/model/twit_model.dart';
 import 'package:tarbiyauz/features/computer_screens/home/presentation/widgets/last_news_widget.dart';
 
 class ListViewWidgets extends StatelessWidget {
   final ScrollController scrollController;
+  final List<TwitModel> twites;
   const ListViewWidgets({
-    super.key,
+    Key? key,
     required this.scrollController,
-  });
+    required this.twites,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -30,8 +33,10 @@ class ListViewWidgets extends StatelessWidget {
         ),
         SliverList(
           delegate: SliverChildBuilderDelegate(
-            (context, index) => const LastNewsWidget(),
-            childCount: 20,
+            (context, index) => LastNewsWidget(
+              twitModel: twites[index],
+            ),
+            childCount: twites.length,
           ),
         ),
       ],

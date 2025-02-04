@@ -15,9 +15,12 @@ GoRouter createRouter(BuildContext context) {
     initialLocation: isPhone ? Routes.bottomnavbar : Routes.homeScreen,
     routes: [
       GoRoute(
-        path: Routes.aboutNewsScreen,
+        path: '${Routes.aboutNewsScreen}/:id',
         name: Routes.aboutNewsScreen,
-        builder: (context, state) => AboutNewsScreen(),
+        builder: (context, state) {
+          final id = state.pathParameters['id']; // Берем id из URL
+          return AboutNewsScreen(id: id!);
+        },
       ),
       GoRoute(
         path: Routes.bottomnavbar,

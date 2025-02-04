@@ -1,84 +1,156 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:developer';
+// ignore_for_file: deprecated_member_use
 
+import 'dart:async';
+import 'dart:developer';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
-
+import 'package:lottie/lottie.dart';
 import 'package:tarbiyauz/core/constants/app_dimens.dart';
 import 'package:tarbiyauz/core/routes/routes.dart';
 import 'package:tarbiyauz/features/computer_screens/home/data/model/twit_model.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 
 class NewsWidgets extends StatelessWidget {
   final TwitModel twitModel;
-  const NewsWidgets({
-    Key? key,
-    required this.twitModel,
-  }) : super(key: key);
+  const NewsWidgets({Key? key, required this.twitModel}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    log(twitModel.photos.first.photoUrl);
-    return ZoomTapAnimation(
-      onTap: () {
-        context.go(Routes.aboutNewsScreen);
-        // Navigator.push(
-        //     context,
-        //     MaterialPageRoute(
-        //       builder: (context) => Ab
-        // outVideoNewsScreen(
-        //           videoUrl: 'https://youtu.be/pvzvbFKDoQY'),
-        //     ));
-      },
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: Theme.of(context).brightness == Brightness.dark
-                ? Colors.white
-                : Colors.black,
-          ),
+    log('${twitModel.title}- ${twitModel.readersCount}');
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: ZoomTapAnimation(
+        onTap: () => context.go('${Routes.aboutNewsScreen}/${twitModel.id}'),
+        child: ClipRRect(
           borderRadius: BorderRadius.circular(AppDimens.BORDER_RADIUS_15),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(
-              child: ClipRRect(
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(AppDimens.BORDER_RADIUS_15),
-                ),
-                child: Image.network(
-                  (twitModel.photos.isNotEmpty &&
-                          twitModel.photos.first.photoUrl.isNotEmpty)
-                      ? twitModel.photos.first.photoUrl
-                      : 'https://yuz.uz/imageproxy/1200x/https://yuz.uz/file/news/c1804423a548ba949fb7d6d0873aba87.jpg',
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      color: Colors.grey,
-                      child: const Center(child: Icon(Icons.error)),
-                    );
-                  },
-                ),
-              ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.all(AppDimens.PADDING_8),
-                child: Text(
-                  twitModel.texts,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
+          child: Stack(
+            children: [
+              _buildImageWithLoader(),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius:
+                      BorderRadius.circular(AppDimens.BORDER_RADIUS_15),
+                  gradient: LinearGradient(
+                    colors: [Colors.black.withOpacity(0.6), Colors.transparent],
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
                   ),
-                  textAlign: TextAlign.center,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 5,
                 ),
               ),
-            ),
-          ],
+
+              // Glassmorphism Overlay with BackdropFilter
+              Positioned(
+                bottom: 10,
+                left: 10,
+                right: 10,
+                child: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Title
+                      Text(
+                        twitModel.title,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 4),
+
+                      // Description
+                      Text(
+                        twitModel.texts,
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.9),
+                          fontSize: 14,
+                        ),
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 6),
+
+                      // Views Counter
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Icon(
+                            LucideIcons.eye,
+                            color: Colors.white.withOpacity(0.9),
+                            size: 18,
+                          ),
+                          const SizedBox(width: 5),
+                          Text(
+                            '${twitModel.readersCount} views',
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.9),
+                              fontSize: 13,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
+ 
+ 
+  }
+
+  /// Handles Image Loading with Lottie
+  Widget _buildImageWithLoader() {
+    return FutureBuilder(
+      future: _preloadImage(twitModel.photos.isNotEmpty &&
+              twitModel.photos.first.photoUrl.isNotEmpty
+          ? twitModel.photos.first.photoUrl
+          : 'https://yuz.uz/imageproxy/1200x/https://yuz.uz/file/news/c1804423a548ba949fb7d6d0873aba87.jpg'),
+      builder: (context, AsyncSnapshot<ImageProvider> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(
+            child: Lottie.asset(
+              'assets/lottie/loading.json', // Lottie animation while loading
+              width: 80,
+              height: 80,
+            ),
+          );
+        } else if (snapshot.hasError) {
+          return Container(
+            color: Colors.grey,
+            child: const Center(child: Icon(Icons.error, size: 40)),
+          );
+        } else {
+          return Image(
+            image: snapshot.data!,
+            width: double.infinity,
+            height: double.infinity,
+            fit: BoxFit.cover,
+          );
+        }
+      },
+    );
+  }
+
+  /// Preloads Image to avoid flickering
+  Future<ImageProvider> _preloadImage(String url) async {
+    final image = NetworkImage(url);
+    final completer = Completer<void>();
+    final listener = ImageStreamListener((_, __) => completer.complete());
+    image.resolve(const ImageConfiguration()).addListener(listener);
+    await completer.future;
+    return image;
   }
 }

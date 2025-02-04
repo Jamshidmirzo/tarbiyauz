@@ -6,6 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tarbiyauz/core/constants/app_constants.dart';
 import 'package:tarbiyauz/core/constants/app_dimens.dart';
 import 'package:tarbiyauz/core/extension/extensions.dart';
+import 'package:tarbiyauz/core/widgets/error_widget.dart';
+import 'package:tarbiyauz/core/widgets/loading_widget.dart';
 import 'package:tarbiyauz/features/computer_screens/home/presentation/bloc/bloc/home_bloc.dart';
 import 'package:tarbiyauz/features/computer_screens/home/presentation/widgets/list_view_widgets.dart';
 import 'package:tarbiyauz/features/computer_screens/home/presentation/widgets/news_widgets.dart';
@@ -26,6 +28,7 @@ class _IsComputerWidgetState extends State<IsComputerWidget> {
   void initState() {
     super.initState();
     context.read<HomeBloc>().add(GetAllTwitesEvent());
+    context.read<HomeBloc>().add(GetLatestTwitesEvent());
   }
 
   @override
@@ -33,148 +36,123 @@ class _IsComputerWidgetState extends State<IsComputerWidget> {
     double fontSize = MediaQuery.of(context).size.width * 0.015;
     double screenWidth = MediaQuery.of(context).size.width;
 
-    return Row(
-      children: [
-        Expanded(
-          flex: 3,
-          child: CustomScrollView(
-            controller: widget.scrollController,
-            slivers: [
-              SliverToBoxAdapter(
-                  child: Container(
-                height: MediaQuery.of(context).size.height * 0.5,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? Colors.white
-                        : Colors.black,
-                  ),
-                  borderRadius:
-                      BorderRadius.circular(AppDimens.BORDER_RADIUS_20),
-                ),
-                child: Row(
-                  children: [
-                    Flexible(
-                      child: Padding(
-                        padding: const EdgeInsets.all(AppDimens.PADDING_20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Flexible(
-                              child: Text(
-                                'Minim occaecat consequat commodo dolor anim labore reprehenderit do ut. Esse id eiusmod ea esse est ut. Cupidatat cillum adipisicing.',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: fontSize * 1,
-                                ),
-                              ),
-                            ),
-                            Flexible(
-                              child: Text(
-                                'Minim occaecat consequat commodo dolor anim labore reprehenderit do ut. Esse id eiusmod ea esse est ut. Cupidatat cillum adipisicing amet officia nostrud culpa eu ut culpa magna Lorem veniam sunt amet.',
-                                style: TextStyle(fontSize: fontSize * 0.7),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.3,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        double screenWidth = constraints.maxWidth;
+        double fontSize = screenWidth * 0.015;
+
+        return Row(
+          children: [
+            Expanded(
+              flex: 3,
+              child: CustomScrollView(
+                controller: widget.scrollController,
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: Container(
                       height: MediaQuery.of(context).size.height * 0.5,
                       decoration: BoxDecoration(
-                        color: Colors.black,
+                        border: Border.all(
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white
+                              : Colors.black,
+                        ),
                         borderRadius:
                             BorderRadius.circular(AppDimens.BORDER_RADIUS_20),
                       ),
-                      child: ClipRRect(
-                        borderRadius:
-                            BorderRadius.circular(AppDimens.BORDER_RADIUS_20),
-                        child: Image.network(
-                          'https://yuz.uz/imageproxy/1200x/https://yuz.uz/file/news/c1804423a548ba949fb7d6d0873aba87.jpg',
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Container(
-                              color: Colors.grey,
-                              child: const Center(child: Icon(Icons.error)),
-                            );
-                          },
-                        ),
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding:
+                                    const EdgeInsets.all(AppDimens.PADDING_20),
+                                child: Text(
+                                  'Minim occaecat consequat commodo dolor anim labore reprehenderit do ut. Esse id eiusmod ea esse est ut. Cupidatat cillum adipisicing.',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: fontSize,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
                       ),
                     ),
-                  ],
-                ),
-              )),
-              const SliverPadding(padding: EdgeInsets.only(top: 20)),
-              BlocBuilder<HomeBloc, HomeState>(
-                builder: (context, state) {
-                  log(state.toString());
+                  ),
+                  const SliverPadding(padding: EdgeInsets.only(top: 20)),
+                  BlocBuilder<HomeBloc, HomeState>(
+                    builder: (context, state) {
+                      if (state.status == Status.Loading) {
+                        return const SliverToBoxAdapter(
+                          child: LoadingWidget(),
+                        );
+                      }
 
-                  if (state.status == Status.Loading) {
-                    return const SliverToBoxAdapter(
-                      child: Center(child: CircularProgressIndicator()),
-                    );
-                  }
+                      if (state.status == Status.Error) {
+                        return const SliverToBoxAdapter(
+                          child: Center(child: Text('Failed to load tweets.')),
+                        );
+                      }
 
-                  if (state.status == Status.Error) {
-                    return const SliverToBoxAdapter(
-                      child: Center(
-                          child:
-                              Text('Failed to load tweets. Please try again.')),
-                    );
-                  }
+                      if (state.status == Status.Success) {
+                        final twites = state.twites ?? [];
 
-                  if (state.status == Status.Success) {
-                    final twites = state.twites ?? [];
-                    if (twites.isEmpty) {
-                      return const SliverToBoxAdapter(
-                        child: Center(child: Text('No tweets available.')),
-                      );
-                    }
-
-                    return screenWidth <= 1060
-                        ? SliverGrid(
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: screenWidth <= 1060 ? 2 : 3,
-                              mainAxisSpacing: 20,
-                              crossAxisSpacing: 20,
-                              childAspectRatio: 1.5,
-                            ),
-                            delegate: SliverChildBuilderDelegate(
-                              (context, index) =>
-                                  NewsWidgets(twitModel: twites[index]),
-                              childCount: twites.length,
-                            ),
-                          )
-                        : SliverGrid(
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 3,
-                              mainAxisSpacing: 20,
-                              crossAxisSpacing: 20,
-                              childAspectRatio: 1.5,
-                            ),
-                            delegate: SliverChildBuilderDelegate(
-                              (context, index) {
-                                return NewsWidgets(twitModel: twites[index]);
-                              },
-                              childCount: twites.length,
-                            ),
+                        if (twites.isEmpty) {
+                          return const SliverToBoxAdapter(
+                            child: Center(child: Text('No tweets available.')),
                           );
-                  }
+                        }
 
+                        return SliverGrid(
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: screenWidth <= 1060 ? 2 : 3,
+                            mainAxisSpacing: 20,
+                            crossAxisSpacing: 20,
+                            childAspectRatio: 1.5,
+                          ),
+                          delegate: SliverChildBuilderDelegate(
+                            (context, index) =>
+                                NewsWidgets(twitModel: twites[index]),
+                            childCount: twites.length,
+                          ),
+                        );
+                      }
+
+                      return const SizedBox.shrink();
+                    },
+                  )
+             
+                ],
+              ),
+            ),
+            const SizedBox(width: 20),
+            Expanded(
+              flex: 1,
+              child: BlocBuilder<HomeBloc, HomeState>(
+                builder: (context, state) {
+                  if (state.status == Status.Loading) {
+                    return const LoadingWidget();
+                  }
+                  if (state.status == Status.Error) {
+                    return const CustomErrorWidget();
+                  }
+                  if (state.status == Status.Success) {
+                    return ListViewWidgets(
+                      scrollController: widget.scrollController,
+                      twites: state.latestTwites ?? [],
+                    );
+                  }
                   return const SizedBox.shrink();
                 },
-              )
-            ],
-          ),
-        ),
-        20.ws(),
-        Flexible(
-          child: ListViewWidgets(scrollController: widget.scrollController),
-        ),
-      ],
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

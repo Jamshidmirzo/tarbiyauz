@@ -1,20 +1,29 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
-import 'package:tarbiyauz/core/constants/app_dimens.dart';
-import 'package:tarbiyauz/core/extension/extensions.dart';
-import 'package:tarbiyauz/features/computer_screens/news/presentation/pages/about_news_screen.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
+import 'package:tarbiyauz/core/constants/app_dimens.dart';
+import 'package:tarbiyauz/core/extension/extensions.dart';
+import 'package:tarbiyauz/features/computer_screens/home/data/model/twit_model.dart';
+import 'package:tarbiyauz/features/computer_screens/news/presentation/pages/about_news_screen.dart';
+
 class PhoneJobWidget extends StatelessWidget {
-  const PhoneJobWidget({super.key});
+  final TwitModel twitModel;
+  const PhoneJobWidget({
+    Key? key,
+    required this.twitModel,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    DateTime date = DateTime.tryParse(twitModel.createdAt) ?? DateTime.now();
     return ZoomTapAnimation(
       onTap: () {
         Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => AboutNewsScreen(),
+              builder: (context) => AboutNewsScreen(id: '',
+              ),
             ));
       },
       child: Container(
@@ -30,9 +39,9 @@ class PhoneJobWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
-                    "Exercitation minim commodo veniam voluptate occaecat elit",
-                    style: TextStyle(
+                  Text(
+                    twitModel.texts,
+                    style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 14,
                     ),
@@ -41,7 +50,7 @@ class PhoneJobWidget extends StatelessWidget {
                   ),
                   4.hs(),
                   Text(
-                    '${DateTime.now().day}.${DateTime.now().month}.${DateTime.now().year}',
+                    '${date.day}.${date.month}.${date.year}',
                     style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                   ),
                 ],
@@ -57,7 +66,7 @@ class PhoneJobWidget extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(AppDimens.BORDER_RADIUS_10),
                 child: Image.network(
-                  'https://yuz.uz/imageproxy/1200x/https://yuz.uz/file/news/c1804423a548ba949fb7d6d0873aba87.jpg',
+                  twitModel.photos.first.photoUrl,
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
                     return Container(

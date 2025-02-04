@@ -152,11 +152,11 @@ class _CustomAppBarState extends State<CustomAppBar> {
           },
           icon: Icon(_isSearchExpanded ? Icons.close : Icons.search),
         ),
-        IconButton(
-          icon: const Icon(Icons.language),
-          onPressed: () {},
-        ),
-        _buildLanguageDropdown(),
+        // IconButton(
+        //   icon: const Icon(Icons.language),
+        //   onPressed: () {},
+        // ),
+        // _buildLanguageDropdown(),
         IconButton(
           icon: const Icon(Icons.menu),
           onPressed: widget.onPressed,
@@ -170,7 +170,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 500),
         curve: Curves.easeInOut,
-        height: 50,
+        height: 40,
         padding: const EdgeInsets.symmetric(horizontal: 16),
         decoration: BoxDecoration(
           color: Colors.grey[200],

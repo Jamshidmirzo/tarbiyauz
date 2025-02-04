@@ -24,7 +24,7 @@ class HomeRepositoriesImpl extends HomeRepostiories {
   @override
   Future<Either<Failure, TwitModel>> getByIdTwites(String id) async {
     try {
-      final responce = await homeDataSources.getById(id);
+      final responce = await homeDataSources.getByIdTwit(id);
       return Right(responce);
     } catch (e) {
       return Left(ServerFailure());

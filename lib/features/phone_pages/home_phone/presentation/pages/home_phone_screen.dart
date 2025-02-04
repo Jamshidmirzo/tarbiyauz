@@ -1,14 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:marquee/marquee.dart';
+import 'package:tarbiyauz/core/constants/app_constants.dart';
 import 'package:tarbiyauz/core/constants/app_dimens.dart';
+import 'package:tarbiyauz/core/widgets/loading_widget.dart';
+import 'package:tarbiyauz/features/computer_screens/home/presentation/bloc/bloc/home_bloc.dart';
 import 'package:tarbiyauz/features/phone_pages/home_phone/presentation/widgets/appbar_phone_widget.dart';
 import 'package:tarbiyauz/features/phone_pages/home_phone/presentation/widgets/main_news_phone_widget.dart';
 import 'package:tarbiyauz/features/phone_pages/home_phone/presentation/widgets/phone_job_widget.dart';
 
 // ignore: must_be_immutable
-class HomePhoneScreen extends StatelessWidget {
+class HomePhoneScreen extends StatefulWidget {
   HomePhoneScreen({super.key});
+
+  @override
+  State<HomePhoneScreen> createState() => _HomePhoneScreenState();
+}
+
+class _HomePhoneScreenState extends State<HomePhoneScreen> {
   final ScrollController _scrollController = ScrollController();
+  @override
+  void initState() {
+    super.initState();
+    context.read<HomeBloc>().add(GetAllTwitesEvent());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,15 +56,45 @@ class HomePhoneScreen extends StatelessWidget {
               child: MainNewsPhoneWidget(),
             ),
           ),
-          SliverPadding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: AppDimens.PADDING_20),
-              sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(childCount: 20,
-                    (context, index) {
-                  return const PhoneJobWidget();
-                }),
-              )),
+          BlocBuilder<HomeBloc, HomeState>(
+            builder: (context, state) {
+              if (state.status == Status.Loading) {
+                return const SliverToBoxAdapter(
+                  child: LoadingWidget(),
+                );
+              }
+
+              if (state.status == Status.Error) {
+                return const SliverToBoxAdapter(
+                  child: Center(child: Text('Failed to load tweets.')),
+                );
+              }
+
+              if (state.status == Status.Success) {
+                final twites = state.twites ?? [];
+
+                if (twites.isEmpty) {
+                  return const SliverToBoxAdapter(
+                    child: Center(child: Text('No tweets available.')),
+                  );
+                }
+
+                return SliverPadding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: AppDimens.PADDING_20),
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                          childCount: twites.length, (context, index) {
+                        return PhoneJobWidget(
+                          twitModel: twites[index],
+                        );
+                      }),
+                    ));
+              }
+
+              return const SizedBox.shrink();
+            },
+          )
         ],
       ),
     );

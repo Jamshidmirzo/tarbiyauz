@@ -35,7 +35,9 @@ class TwitModel {
       userId: json['user_id'],
       publisherFio: json['publisher_fio'],
       type: json['type'],
-      texts: json['texts'],
+      texts: json['texts'] is List
+          ? (json['texts'] as List).join(', ')
+          : json['texts']?.toString() ?? '',
       title: json['title'],
       readersCount: json['readers_count'],
       createdAt: json['created_at'],
@@ -51,8 +53,12 @@ class TwitModel {
               ?.map((music) => MusicModel.fromJson(music))
               .toList() ??
           [],
-      locations: json['locations'],
-      urls: json['urls'],
+      locations: json['locations'] is List
+          ? (json['locations'] as List).join(', ')
+          : json['locations']?.toString(),
+      urls: json['urls'] is List
+          ? (json['urls'] as List).join(', ')
+          : json['urls']?.toString(),
     );
   }
 
