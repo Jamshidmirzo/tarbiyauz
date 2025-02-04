@@ -353,7 +353,6 @@ Widget _buildImageWithLoader(TwitModel twitModel) {
   );
 }
 
-/// Preloads Image to avoid flickering
 Future<ImageProvider> _preloadImage(String url) async {
   final image = NetworkImage(url);
   final completer = Completer<void>();
