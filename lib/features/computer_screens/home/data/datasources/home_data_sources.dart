@@ -66,6 +66,32 @@ class HomeDataSources {
     }
   }
 
+  Future<List<String>> getTypes() async {
+    log('TYPEs');
+    log('Запрос: ${AppConstants.baseUrl}twit/types');
+    final response = await dio.get(
+      '${AppConstants.baseUrl}twit/types',
+    );
+
+    log('Статус код: ${response.statusCode}');
+    log('Ответ: ${response.data.runtimeType}');
+    try {
+      if (response.statusCode == 200) {
+        final List<String> ids = List<String>.from(response.data);
+
+        return ids;
+      } else {
+        throw ServerExcepiton();
+      }
+    } on DioException catch (e) {
+      log('Ошибка API: ${e.message}');
+      throw ServerExcepiton();
+    } catch (e) {
+      log('Неизвестная ошибка: $e');
+      throw ServerExcepiton();
+    }
+  }
+
   Future<List<TwitModel>> getLatestTwites(int? limit) async {
     log('LATEST');
     log('Запрос: ${AppConstants.baseUrl}twit/latest-uploaded?limit=${limit ?? 10}');

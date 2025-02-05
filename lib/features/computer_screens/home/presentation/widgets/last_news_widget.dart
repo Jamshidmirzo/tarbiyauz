@@ -18,7 +18,7 @@ class LastNewsWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(twitModel.texts),
+          Text(twitModel.title),
           const Divider(),
         ],
       ),

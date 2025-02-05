@@ -27,6 +27,7 @@ class _IsComputerWidgetState extends State<IsComputerWidget> {
   @override
   void initState() {
     super.initState();
+    context.read<HomeBloc>().add(GetTypesEvent());
     context.read<HomeBloc>().add(GetAllTwitesEvent());
     context.read<HomeBloc>().add(GetLatestTwitesEvent());
   }
@@ -54,7 +55,7 @@ class _IsComputerWidgetState extends State<IsComputerWidget> {
                       decoration: BoxDecoration(
                         border: Border.all(
                           color: Theme.of(context).brightness == Brightness.dark
-                              ? Colors.white
+                              ? Color(0xFFF8F8F8)
                               : Colors.black,
                         ),
                         borderRadius:
@@ -93,17 +94,17 @@ class _IsComputerWidgetState extends State<IsComputerWidget> {
 
                       if (state.status == Status.Error) {
                         return const SliverToBoxAdapter(
-                          child: Center(child: Text('Failed to load tweets.')),
+                          child: CustomErrorWidget(),
                         );
                       }
 
                       if (state.status == Status.Success) {
                         final twites = state.twites ?? [];
 
+                        ///EMTY WIDGET
                         if (twites.isEmpty) {
                           return const SliverToBoxAdapter(
-                            child: Center(child: Text('No tweets available.')),
-                          );
+                              child: CustomErrorWidget());
                         }
 
                         return SliverGrid(
@@ -125,7 +126,6 @@ class _IsComputerWidgetState extends State<IsComputerWidget> {
                       return const SizedBox.shrink();
                     },
                   )
-             
                 ],
               ),
             ),

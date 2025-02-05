@@ -80,24 +80,6 @@ class NewsWidgets extends StatelessWidget {
                       const SizedBox(height: 6),
 
                       // Views Counter
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Icon(
-                            LucideIcons.eye,
-                            color: Colors.white.withOpacity(0.9),
-                            size: 18,
-                          ),
-                          const SizedBox(width: 5),
-                          Text(
-                            '${twitModel.readersCount} views',
-                            style: TextStyle(
-                              color: Colors.white.withOpacity(0.9),
-                              fontSize: 13,
-                            ),
-                          ),
-                        ],
-                      ),
                     ],
                   ),
                 ),
@@ -107,8 +89,6 @@ class NewsWidgets extends StatelessWidget {
         ),
       ),
     );
- 
- 
   }
 
   /// Handles Image Loading with Lottie

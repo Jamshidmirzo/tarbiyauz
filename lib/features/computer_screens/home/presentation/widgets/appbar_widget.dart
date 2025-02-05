@@ -1,10 +1,15 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:marquee/marquee.dart';
+import 'package:tarbiyauz/core/constants/app_constants.dart';
 import 'package:tarbiyauz/core/extension/extensions.dart';
 import 'package:tarbiyauz/core/routes/routes.dart';
+import 'package:tarbiyauz/core/widgets/error_widget.dart';
+import 'package:tarbiyauz/core/widgets/loading_widget.dart';
+import 'package:tarbiyauz/features/computer_screens/home/presentation/bloc/bloc/home_bloc.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
@@ -31,16 +36,16 @@ class _CustomAppBarState extends State<CustomAppBar> {
     'Русский',
   ];
 
-  final List<String> categories = [
-    'O\'zbekiston',
-    'Jahon',
-    'Iqtisodiyot',
-    'Jamiyat',
-    'Sport',
-    'Fan-texnika',
-    'Nuqtai nazar',
-    'Audio'
-  ];
+  // final List<String> categories = [
+  //   'O\'zbekiston',
+  //   'Jahon',
+  //   'Iqtisodiyot',
+  //   'Jamiyat',
+  //   'Sport',
+  //   'Fan-texnika',
+  //   'Nuqtai nazar',
+  //   'Audio'
+  // ];
 
   bool _isSearchExpanded = false;
   final TextEditingController _searchController = TextEditingController();
@@ -126,18 +131,36 @@ class _CustomAppBarState extends State<CustomAppBar> {
   }
 
   Widget _buildCategories() {
-    return Expanded(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: categories.map((category) {
-          return Flexible(
-            child: ZoomTapAnimation(
-              onTap: () {},
-              child: Text(category, style: TextStyle(fontSize: fontSize)),
+    return BlocBuilder<HomeBloc, HomeState>(
+      builder: (context, state) {
+        if (state.status == Status.Error) {
+          return const Center(
+            child: CustomErrorWidget(),
+          );
+        }
+        if (state.status == Status.Loading) {
+          return const Center(
+            child: LoadingWidget(),
+          );
+        }
+        if (state.status == Status.Success) {
+          final categories = state.types ?? [];
+          return Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: categories.map((category) {
+                return Flexible(
+                  child: ZoomTapAnimation(
+                    onTap: () {},
+                    child: Text(category, style: TextStyle(fontSize: fontSize)),
+                  ),
+                );
+              }).toList(),
             ),
           );
-        }).toList(),
-      ),
+        }
+        return Container();
+      },
     );
   }
 
@@ -200,28 +223,28 @@ class _CustomAppBarState extends State<CustomAppBar> {
     );
   }
 
-  Widget _buildLanguageDropdown() {
-    return ZoomTapAnimation(
-      onTap: null,
-      child: DropdownButton<String>(
-        value: selectedLanguage,
-        underline: const SizedBox(),
-        icon: const Icon(Icons.arrow_drop_down),
-        items: languages.map((language) {
-          return DropdownMenuItem(
-            value: language,
-            child: Text(language, style: const TextStyle(fontSize: 16)),
-          );
-        }).toList(),
-        onChanged: (value) {
-          setState(() {
-            selectedLanguage = value!;
-          });
-        },
-        dropdownColor: Theme.of(context).brightness == Brightness.dark
-            ? Colors.grey[900]
-            : Colors.white,
-      ),
-    );
-  }
+  // Widget _buildLanguageDropdown() {
+  //   return ZoomTapAnimation(
+  //     onTap: null,
+  //     child: DropdownButton<String>(
+  //       value: selectedLanguage,
+  //       underline: const SizedBox(),
+  //       icon: const Icon(Icons.arrow_drop_down),
+  //       items: languages.map((language) {
+  //         return DropdownMenuItem(
+  //           value: language,
+  //           child: Text(language, style: const TextStyle(fontSize: 16)),
+  //         );
+  //       }).toList(),
+  //       onChanged: (value) {
+  //         setState(() {
+  //           selectedLanguage = value!;
+  //         });
+  //       },
+  //       dropdownColor: Theme.of(context).brightness == Brightness.dark
+  //           ? Colors.grey[900]
+  //           : Colors.white,
+  //     ),
+  //   );
+  // }
 }

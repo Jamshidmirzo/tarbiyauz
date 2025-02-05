@@ -71,4 +71,13 @@ class HomeRepositoriesImpl extends HomeRepostiories {
       return Left(ServerFailure());
     }
   }
+
+  @override
+  Future<Either<Failure, List<String>>> getTypes() async {
+    try {
+      return Right(await homeDataSources.getTypes());
+    } catch (e) {
+      return Left(ServerFailure());
+    }
+  }
 }

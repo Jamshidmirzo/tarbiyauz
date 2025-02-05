@@ -10,6 +10,7 @@ import 'package:tarbiyauz/features/computer_screens/home/domain/usecase/get_by_i
 import 'package:tarbiyauz/features/computer_screens/home/domain/usecase/get_by_type_twites_usecase.dart';
 import 'package:tarbiyauz/features/computer_screens/home/domain/usecase/get_last_twites_usecase.dart';
 import 'package:tarbiyauz/features/computer_screens/home/domain/usecase/get_most_viewed_usecase.dart';
+import 'package:tarbiyauz/features/computer_screens/home/domain/usecase/get_types_usecase.dart';
 import 'package:tarbiyauz/features/computer_screens/home/domain/usecase/search_twites_usecase.dart';
 
 // Define HomeEvent
@@ -20,6 +21,8 @@ class GetAllTwitesEvent extends HomeEvent {}
 class GetLatestTwitesEvent extends HomeEvent {}
 
 class GetMostTwitesEvent extends HomeEvent {}
+
+class GetTypesEvent extends HomeEvent {}
 
 class GetByIdTwitesEvent extends HomeEvent {
   String id;
@@ -42,13 +45,15 @@ class HomeState {
   final List<TwitModel>? latestTwites;
   TwitModel? twit;
   List<TwitModel>? mostVievedTwites;
+  List<String>? types;
 
   HomeState(
       {this.status = Status.Loading,
       this.twites,
       this.latestTwites,
       this.mostVievedTwites,
-      this.twit});
+      this.twit,
+      this.types});
 
   HomeState copyWith({
     Status? status,
@@ -56,13 +61,15 @@ class HomeState {
     List<TwitModel>? latestTwites,
     List<TwitModel>? mostVievedTwites,
     TwitModel? twit,
+    List<String>? types,
   }) {
     return HomeState(
         status: status ?? this.status,
         twites: twites ?? this.twites,
         latestTwites: latestTwites ?? this.latestTwites,
         mostVievedTwites: mostVievedTwites ?? this.mostVievedTwites,
-        twit: twit ?? this.twit);
+        twit: twit ?? this.twit,
+        types: types ?? this.types);
   }
 }
 
@@ -74,6 +81,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   GetLastTwitesUsecase getLastTwitesUsecase;
   GetMostViewedUsecase getMostViewedUsecase;
   SearchTwitesUsecase searchTwitesUsecase;
+  GetTypesUsecase getTypesUsecase;
   HomeBloc(
     this.getAllTwitesUsecase,
     this.getByIdTwitesUsecase,
@@ -81,11 +89,28 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     this.getLastTwitesUsecase,
     this.getMostViewedUsecase,
     this.searchTwitesUsecase,
+    this.getTypesUsecase,
   ) : super(HomeState()) {
     on<GetAllTwitesEvent>(_onGetAllTwites);
     on<GetLatestTwitesEvent>(_onGetLatestTwites);
     on<GetMostTwitesEvent>(_onMostViewedLatestTwites);
     on<GetByIdTwitesEvent>(_onByTwites);
+    on<GetTypesEvent>(_onGetTwites);
+  }
+
+  Future<void> _onGetTwites(
+      GetTypesEvent event, Emitter<HomeState> emit) async {
+    emit(state.copyWith(status: Status.Loading));
+
+    final responce = await getTypesUsecase(null);
+
+    responce.fold((error) {
+      emit(state.copyWith(
+        status: Status.Error,
+      ));
+    }, (data) {
+      emit(state.copyWith(status: Status.Success, types: data));
+    });
   }
 
   Future<void> _onByTwites(
