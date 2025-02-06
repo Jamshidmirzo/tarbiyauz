@@ -11,7 +11,7 @@ import 'package:tarbiyauz/features/phone_pages/home_phone/presentation/widgets/p
 
 // ignore: must_be_immutable
 class HomePhoneScreen extends StatefulWidget {
-  HomePhoneScreen({super.key});
+  const HomePhoneScreen({super.key});
 
   @override
   State<HomePhoneScreen> createState() => _HomePhoneScreenState();

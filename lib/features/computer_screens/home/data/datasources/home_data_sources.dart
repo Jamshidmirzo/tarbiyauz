@@ -24,25 +24,20 @@ class HomeDataSources {
       } else {
         throw ServerExcepiton();
       }
-    } on DioException catch (e) {
-      print('Error during API request: $e');
+    } on DioException {
       throw ServerExcepiton();
     } catch (e) {
-      print('An unknown error occurred: $e');
       throw ServerExcepiton();
     }
   }
 
   Future<List<TwitModel>> getMostViewedTwites(int? limit) async {
-    log('Запрос: ${AppConstants.baseUrl}twit/most-viewed?limit=${limit ?? 10}');
     List<TwitModel> twites = [];
     final response = await dio.get(
       '${AppConstants.baseUrl}twit/most-viewed',
       queryParameters: {"limit": limit ?? 10},
     );
 
-    log('Статус код: ${response.statusCode}');
-    log('Ответ: ${response.data.runtimeType}');
     try {
       if (response.statusCode == 200) {
         // Приводим response.data к List<String>
@@ -67,14 +62,10 @@ class HomeDataSources {
   }
 
   Future<List<String>> getTypes() async {
-    log('TYPEs');
-    log('Запрос: ${AppConstants.baseUrl}twit/types');
     final response = await dio.get(
       '${AppConstants.baseUrl}twit/types',
     );
 
-    log('Статус код: ${response.statusCode}');
-    log('Ответ: ${response.data.runtimeType}');
     try {
       if (response.statusCode == 200) {
         final List<String> ids = List<String>.from(response.data);
@@ -93,16 +84,12 @@ class HomeDataSources {
   }
 
   Future<List<TwitModel>> getLatestTwites(int? limit) async {
-    log('LATEST');
-    log('Запрос: ${AppConstants.baseUrl}twit/latest-uploaded?limit=${limit ?? 10}');
     List<TwitModel> twites = [];
     final response = await dio.get(
       '${AppConstants.baseUrl}twit/latest-uploaded',
       queryParameters: {"limit": limit ?? 10},
     );
 
-    log('Статус код: ${response.statusCode}');
-    log('Ответ: ${response.data.runtimeType}');
     try {
       if (response.statusCode == 200) {
         // Приводим response.data к List<String>
@@ -117,11 +104,9 @@ class HomeDataSources {
       }
 
       return twites;
-    } on DioException catch (e) {
-      log('Ошибка API: ${e.message}');
+    } on DioException {
       throw ServerExcepiton();
     } catch (e) {
-      log('Неизвестная ошибка: $e');
       throw ServerExcepiton();
     }
     // log('HEllloogogogoogsdfghjkLATEEEST');
@@ -149,8 +134,6 @@ class HomeDataSources {
   }
 
   Future<List<TwitModel>> getByTypeTwites(String type) async {
-    log('HEllloogogogoogsdfghjk');
-    log('${AppConstants.baseUrl}twit/all');
     List<TwitModel> twites = [];
     try {
       final response = await dio.get(
@@ -164,18 +147,14 @@ class HomeDataSources {
       } else {
         throw ServerExcepiton();
       }
-    } on DioException catch (e) {
-      print('Error during API request: $e');
+    } on DioException {
       throw ServerExcepiton();
     } catch (e) {
-      print('An unknown error occurred: $e');
       throw ServerExcepiton();
     }
   }
 
   Future<List<TwitModel>> searchTwites(String title) async {
-    log('HEllloogogogoogsdfghjk');
-    log('${AppConstants.baseUrl}twit/all');
     List<TwitModel> twites = [];
     try {
       final response = await dio.get('${AppConstants.baseUrl}twit/search',
@@ -188,17 +167,14 @@ class HomeDataSources {
       } else {
         throw ServerExcepiton();
       }
-    } on DioException catch (e) {
-      print('Error during API request: $e');
+    } on DioException {
       throw ServerExcepiton();
     } catch (e) {
-      print('An unknown error occurred: $e');
       throw ServerExcepiton();
     }
   }
 
   Future<TwitModel> getById(String id) async {
-    log('${AppConstants.baseUrl}twit/$id');
     try {
       final response = await dio.get('${AppConstants.baseUrl}twit/$id');
       if (response.statusCode == 200) {
@@ -206,8 +182,7 @@ class HomeDataSources {
       } else {
         throw ServerExcepiton();
       }
-    } on DioException catch (e) {
-      print('Error during API request for Twit ID $id: $e');
+    } on DioException {
       throw ServerExcepiton();
     }
   }
@@ -222,8 +197,7 @@ class HomeDataSources {
       } else {
         throw ServerExcepiton();
       }
-    } on DioException catch (e) {
-      print('Error during API request for Twit ID $id: $e');
+    } on DioException {
       throw ServerExcepiton();
     }
   }

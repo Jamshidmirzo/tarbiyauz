@@ -1,8 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
 import 'dart:async';
-import 'dart:developer';
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
@@ -10,15 +8,15 @@ import 'package:lottie/lottie.dart';
 import 'package:tarbiyauz/core/constants/app_dimens.dart';
 import 'package:tarbiyauz/core/routes/routes.dart';
 import 'package:tarbiyauz/features/computer_screens/home/data/model/twit_model.dart';
-import 'package:lucide_icons/lucide_icons.dart';
 
 class NewsWidgets extends StatelessWidget {
   final TwitModel twitModel;
+  // ignore: use_super_parameters
   const NewsWidgets({Key? key, required this.twitModel}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    log('${twitModel.title}- ${twitModel.readersCount}');
+    debugPrint('${twitModel.title} - ${twitModel.readersCount}');
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: ZoomTapAnimation(
@@ -78,8 +76,6 @@ class NewsWidgets extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 6),
-
-                      // Views Counter
                     ],
                   ),
                 ),
@@ -93,16 +89,16 @@ class NewsWidgets extends StatelessWidget {
 
   /// Handles Image Loading with Lottie
   Widget _buildImageWithLoader() {
+    final imageUrl = _getImageUrl();
+    debugPrint("Final imageUrl: $imageUrl");
+
     return FutureBuilder(
-      future: _preloadImage(twitModel.photos.isNotEmpty &&
-              twitModel.photos.first.photoUrl.isNotEmpty
-          ? twitModel.photos.first.photoUrl
-          : 'https://yuz.uz/imageproxy/1200x/https://yuz.uz/file/news/c1804423a548ba949fb7d6d0873aba87.jpg'),
+      future: _preloadImage(imageUrl),
       builder: (context, AsyncSnapshot<ImageProvider> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
             child: Lottie.asset(
-              'assets/lottie/loading.json', // Lottie animation while loading
+              'assets/lottie/loading.json',
               width: 80,
               height: 80,
             ),
@@ -124,11 +120,56 @@ class NewsWidgets extends StatelessWidget {
     );
   }
 
+  /// Determines the correct image URL
+  String _getImageUrl() {
+    if (twitModel.photos.isNotEmpty &&
+        twitModel.photos.first.photoUrl.isNotEmpty) {
+      return twitModel.photos.first.photoUrl;
+    }
+
+    if (twitModel.videos.isNotEmpty) {
+      final videoUrl = twitModel.videos.first.videoUrl;
+      final videoId = _extractYouTubeVideoId(videoUrl);
+      debugPrint("Extracted Video ID: $videoId");
+
+      if (videoId != null) {
+        return "https://img.youtube.com/vi/$videoId/hqdefault.jpg";
+      }
+    }
+
+    return 'https://yuz.uz/imageproxy/1200x/https://yuz.uz/file/news/c1804423a548ba949fb7d6d0873aba87.jpg';
+  }
+
+  /// Extracts the YouTube Video ID from URL
+  String? _extractYouTubeVideoId(String url) {
+    try {
+      final uri = Uri.parse(url);
+      String? videoId;
+
+      if (uri.host.contains("youtu.be")) {
+        videoId = uri.pathSegments.isNotEmpty ? uri.pathSegments.last : null;
+      } else if (uri.host.contains("youtube.com")) {
+        videoId = uri.queryParameters["v"];
+      }
+
+      debugPrint("Extracted videoId: $videoId from URL: $url");
+      return videoId;
+    } catch (e) {
+      debugPrint("Error extracting videoId: $e");
+      return null;
+    }
+  }
+
   /// Preloads Image to avoid flickering
   Future<ImageProvider> _preloadImage(String url) async {
     final image = NetworkImage(url);
     final completer = Completer<void>();
-    final listener = ImageStreamListener((_, __) => completer.complete());
+    final listener = ImageStreamListener((_, __) => completer.complete(),
+        onError: (error, stackTrace) {
+      debugPrint("Image load error: $error");
+      completer.completeError(error);
+    });
+
     image.resolve(const ImageConfiguration()).addListener(listener);
     await completer.future;
     return image;

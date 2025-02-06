@@ -6,6 +6,7 @@ import 'package:tarbiyauz/features/computer_screens/home/data/model/twit_model.d
 
 class LastNewsWidget extends StatelessWidget {
   final TwitModel twitModel;
+  // ignore: use_super_parameters
   const LastNewsWidget({
     Key? key,
     required this.twitModel,

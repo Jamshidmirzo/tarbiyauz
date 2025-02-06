@@ -22,7 +22,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
   }
 
   List screens = [
-    HomePhoneScreen(),
+    const HomePhoneScreen(),
     const NewsPhoneScreen(),
     const VideoPhoneScreen(),
     MorePhoneScreen()

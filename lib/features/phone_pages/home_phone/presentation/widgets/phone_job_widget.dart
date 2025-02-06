@@ -9,6 +9,7 @@ import 'package:tarbiyauz/features/computer_screens/news/presentation/pages/abou
 
 class PhoneJobWidget extends StatelessWidget {
   final TwitModel twitModel;
+  // ignore: use_super_parameters
   const PhoneJobWidget({
     Key? key,
     required this.twitModel,

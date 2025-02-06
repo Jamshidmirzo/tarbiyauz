@@ -45,6 +45,8 @@ class HomeState {
   final List<TwitModel>? latestTwites;
   TwitModel? twit;
   List<TwitModel>? mostVievedTwites;
+  List<TwitModel>? searchedResultTwites;
+
   List<String>? types;
 
   HomeState(
@@ -53,7 +55,8 @@ class HomeState {
       this.latestTwites,
       this.mostVievedTwites,
       this.twit,
-      this.types});
+      this.types,
+      this.searchedResultTwites});
 
   HomeState copyWith({
     Status? status,
@@ -62,6 +65,7 @@ class HomeState {
     List<TwitModel>? mostVievedTwites,
     TwitModel? twit,
     List<String>? types,
+    List<TwitModel>? searchedResultTwites,
   }) {
     return HomeState(
         status: status ?? this.status,
@@ -69,7 +73,9 @@ class HomeState {
         latestTwites: latestTwites ?? this.latestTwites,
         mostVievedTwites: mostVievedTwites ?? this.mostVievedTwites,
         twit: twit ?? this.twit,
-        types: types ?? this.types);
+        types: types ?? this.types,
+        searchedResultTwites:
+            searchedResultTwites ?? this.searchedResultTwites);
   }
 }
 
@@ -96,6 +102,22 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<GetMostTwitesEvent>(_onMostViewedLatestTwites);
     on<GetByIdTwitesEvent>(_onByTwites);
     on<GetTypesEvent>(_onGetTwites);
+    on<GetBySearchTwitesEvent>(_onGetSearchTwites);
+  }
+
+  Future<void> _onGetSearchTwites(
+      GetBySearchTwitesEvent event, Emitter<HomeState> emit) async {
+    emit(state.copyWith(status: Status.Loading));
+
+    final responce = await searchTwitesUsecase(event.title);
+
+    responce.fold((error) {
+      emit(state.copyWith(
+        status: Status.Error,
+      ));
+    }, (data) {
+      emit(state.copyWith(status: Status.Success, searchedResultTwites: data));
+    });
   }
 
   Future<void> _onGetTwites(

@@ -8,6 +8,7 @@ import 'package:tarbiyauz/features/computer_screens/home/presentation/widgets/la
 class ListViewWidgets extends StatelessWidget {
   final ScrollController scrollController;
   final List<TwitModel> twites;
+  // ignore: use_super_parameters
   const ListViewWidgets({
     Key? key,
     required this.scrollController,

@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_web_libraries_in_flutter, library_private_types_in_public_api
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:html' as html;
@@ -200,6 +202,7 @@ class _AboutVideoNewsScreenState extends State<AboutVideoNewsScreen> {
     );
   }
 
+  // ignore: unused_element
   Widget _buildExpandableDescription() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

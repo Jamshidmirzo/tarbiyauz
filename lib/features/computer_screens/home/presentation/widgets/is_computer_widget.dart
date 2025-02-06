@@ -1,11 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tarbiyauz/core/constants/app_constants.dart';
 import 'package:tarbiyauz/core/constants/app_dimens.dart';
-import 'package:tarbiyauz/core/extension/extensions.dart';
 import 'package:tarbiyauz/core/widgets/error_widget.dart';
 import 'package:tarbiyauz/core/widgets/loading_widget.dart';
 import 'package:tarbiyauz/features/computer_screens/home/presentation/bloc/bloc/home_bloc.dart';
@@ -34,7 +32,9 @@ class _IsComputerWidgetState extends State<IsComputerWidget> {
 
   @override
   Widget build(BuildContext context) {
+    // ignore: unused_local_variable
     double fontSize = MediaQuery.of(context).size.width * 0.015;
+    // ignore: unused_local_variable
     double screenWidth = MediaQuery.of(context).size.width;
 
     return LayoutBuilder(
@@ -55,7 +55,7 @@ class _IsComputerWidgetState extends State<IsComputerWidget> {
                       decoration: BoxDecoration(
                         border: Border.all(
                           color: Theme.of(context).brightness == Brightness.dark
-                              ? Color(0xFFF8F8F8)
+                              ? const Color(0xFFF8F8F8)
                               : Colors.black,
                         ),
                         borderRadius:
@@ -126,6 +126,7 @@ class _IsComputerWidgetState extends State<IsComputerWidget> {
                       return const SizedBox.shrink();
                     },
                   )
+               
                 ],
               ),
             ),

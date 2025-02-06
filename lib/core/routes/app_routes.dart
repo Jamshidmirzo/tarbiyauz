@@ -18,14 +18,14 @@ GoRouter createRouter(BuildContext context) {
         path: '${Routes.aboutNewsScreen}/:id',
         name: Routes.aboutNewsScreen,
         builder: (context, state) {
-          final id = state.pathParameters['id']; // Берем id из URL
+          final id = state.pathParameters['id']; 
           return AboutNewsScreen(id: id!);
         },
       ),
       GoRoute(
         path: Routes.bottomnavbar,
         name: Routes.bottomnavbar,
-        builder: (context, state) => BottomNavBar(),
+        builder: (context, state) => const BottomNavBar(),
       ),
       GoRoute(
         path: Routes.aboutVideoNewsScreen,

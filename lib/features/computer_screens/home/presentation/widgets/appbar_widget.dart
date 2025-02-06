@@ -202,11 +202,15 @@ class _CustomAppBarState extends State<CustomAppBar> {
         child: Row(
           children: [
             IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  context.go(Routes.searchResult);
+                  // context.read<HomeBloc>().add();
+                },
                 icon: Icon(Icons.search, color: Colors.grey[600])),
             const SizedBox(width: 8),
             Expanded(
               child: TextFormField(
+                style: const TextStyle(color: Colors.black),
                 onFieldSubmitted: (value) {
                   context.go(Routes.searchResult);
                 },

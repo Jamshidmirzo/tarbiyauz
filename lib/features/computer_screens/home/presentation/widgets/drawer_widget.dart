@@ -1,7 +1,7 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tarbiyauz/core/constants/app_constants.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 

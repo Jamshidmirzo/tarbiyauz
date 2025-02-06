@@ -6,7 +6,7 @@ enum Status { Success, Error, Loading }
 
 class AppConstants {
   static String baseUrlCurrency = 'https://nbu.uz/uz/exchange-rates/json/';
-  static String baseUrl = 'http://18.142.45.231:4444/v1/';
+  static String baseUrl = 'https://harbiytarbiya.uz/v1/';
   static const String sfProBold = 'SfProBold';
   static const String sfProLight = 'SfProLight';
   static const String sfProMedium = 'SfProMedium';

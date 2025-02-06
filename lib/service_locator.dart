@@ -15,6 +15,7 @@ import 'package:tarbiyauz/features/computer_screens/home/presentation/bloc/bloc/
 
 final sl = GetIt.instance;
 Future<void> init() async {
+  // ignore: unused_local_variable
   final dio = DioConfig().client;
 
   sl.registerCachedFactory(() => HomeDataSources(dio: Dio()));
