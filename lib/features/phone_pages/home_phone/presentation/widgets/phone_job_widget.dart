@@ -1,5 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:tarbiyauz/core/routes/routes.dart';
 import 'package:tarbiyauz/core/widgets/get_date_widget.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
@@ -18,16 +20,9 @@ class PhoneJobWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    DateTime date = DateTime.tryParse(twitModel.createdAt) ?? DateTime.now();
     return ZoomTapAnimation(
       onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AboutNewsScreen(
-                id: twitModel.id,
-              ),
-            ));
+        context.go('${Routes.aboutNewsScreen}/${twitModel.id}');
       },
       child: Container(
         height: 100,

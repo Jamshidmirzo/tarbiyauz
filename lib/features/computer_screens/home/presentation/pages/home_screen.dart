@@ -1,6 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:tarbiyauz/core/constants/app_dimens.dart';
+import 'package:tarbiyauz/core/widgets/bottom_nav_bar.dart';
 import 'package:tarbiyauz/features/computer_screens/home/presentation/widgets/appbar_widget.dart';
 import 'package:tarbiyauz/features/computer_screens/home/presentation/widgets/drawer_widget.dart';
 import 'package:tarbiyauz/features/computer_screens/home/presentation/widgets/is_computer_widget.dart';
@@ -27,14 +30,20 @@ class _NewsScreenState extends State<NewsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final bool isPhone = screenWidth <= 480;
+    log(screenWidth.toString());
+
     return Scaffold(
       // backgroundColor: Color(0xFF121212),
       key: _scaffoldKey,
       endDrawer: const DrawerWidget(),
-      appBar: CustomAppBar(
-        scrollController: _scrollController,
-        onPressed: _toggleDrawer,
-      ),
+      appBar: isPhone
+          ? null
+          : CustomAppBar(
+              scrollController: _scrollController,
+              onPressed: _toggleDrawer,
+            ),
       body: Stack(
         children: [
           Padding(
@@ -43,7 +52,9 @@ class _NewsScreenState extends State<NewsScreen> {
               left: AppDimens.PADDING_20,
               right: AppDimens.PADDING_20,
             ),
-            child: IsComputerWidget(scrollController: _scrollController),
+            child: isPhone
+                ? BottomNavBar()
+                : IsComputerWidget(scrollController: _scrollController),
           ),
           // Uncomment if needed
           // AnimatedContaierWidget(

@@ -1,7 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:tarbiyauz/core/constants/app_dimens.dart';
+import 'package:tarbiyauz/core/routes/routes.dart';
 import 'package:tarbiyauz/features/computer_screens/home/data/model/twit_model.dart';
 
 class LastNewsWidget extends StatelessWidget {
@@ -14,14 +16,19 @@ class LastNewsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(AppDimens.PADDING_8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(twitModel.title),
-          const Divider(),
-        ],
+    return GestureDetector(
+      onTap: () {
+        context.go('${Routes.aboutNewsScreen}/${twitModel.id}');
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(AppDimens.PADDING_8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(twitModel.title),
+            const Divider(),
+          ],
+        ),
       ),
     );
   }

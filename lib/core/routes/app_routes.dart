@@ -13,7 +13,7 @@ GoRouter createRouter(BuildContext context) {
   final bool isPhone = screenWidth <= 400;
 
   return GoRouter(
-    initialLocation: isPhone ? Routes.bottomnavbar : Routes.homeScreen,
+    initialLocation: Routes.homeScreen,
     routes: [
       GoRoute(
         path: '${Routes.aboutNewsScreen}/:id',

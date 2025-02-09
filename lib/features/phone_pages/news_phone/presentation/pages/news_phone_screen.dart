@@ -1,11 +1,13 @@
 import 'dart:developer';
 
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tarbiyauz/core/constants/app_constants.dart';
 import 'package:tarbiyauz/core/constants/app_dimens.dart';
+import 'package:tarbiyauz/core/routes/routes.dart';
 import 'package:tarbiyauz/core/widgets/error_widget.dart';
 import 'package:tarbiyauz/core/widgets/get_date_widget.dart';
 import 'package:tarbiyauz/core/widgets/loading_widget.dart';
@@ -119,14 +121,20 @@ class _NewsPhoneScreenState extends State<NewsPhoneScreen>
                           itemBuilder: (context, index) {
                             final type = tiwites[index];
                             log(type.createdAt);
-                            return Column(
-                              children: [
-                                ListTile(
-                                    title: Text(type.title),
-                                    subtitle:
-                                        GetDateWidget(type: type.createdAt)),
-                                const Divider(),
-                              ],
+                            return GestureDetector(
+                              onTap: () {
+                                context
+                                    .go('${Routes.aboutNewsScreen}/${type.id}');
+                              },
+                              child: Column(
+                                children: [
+                                  ListTile(
+                                      title: Text(type.title),
+                                      subtitle:
+                                          GetDateWidget(type: type.createdAt)),
+                                  const Divider(),
+                                ],
+                              ),
                             );
                           },
                         );
