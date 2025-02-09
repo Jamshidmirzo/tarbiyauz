@@ -10,7 +10,7 @@ import 'package:tarbiyauz/features/computer_screens/news/presentation/pages/sear
 
 GoRouter createRouter(BuildContext context) {
   final double screenWidth = MediaQuery.of(context).size.width;
-  final bool isPhone = screenWidth <= 450;
+  final bool isPhone = screenWidth <= 400;
 
   return GoRouter(
     initialLocation: isPhone ? Routes.bottomnavbar : Routes.homeScreen,
