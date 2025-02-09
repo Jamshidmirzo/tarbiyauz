@@ -5,9 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
-class DrawerWidget extends StatelessWidget {
+class DrawerWidget extends StatefulWidget {
   const DrawerWidget({super.key});
 
+  @override
+  State<DrawerWidget> createState() => _DrawerWidgetState();
+}
+
+class _DrawerWidgetState extends State<DrawerWidget> {
   Future<void> connect(BuildContext context, String url) async {
     final uri = Uri.parse(url);
     if (await canLaunchUrl(uri)) {
@@ -32,17 +37,18 @@ class DrawerWidget extends StatelessWidget {
           ListTile(
             leading: Icon(isDarkMode ? Icons.light_mode : Icons.dark_mode),
             trailing: Switch(
-              activeTrackColor: Colors.green,
-              activeColor: Colors.white,
-              value: isDarkMode,
-              onChanged: (value) {
-                if (value) {
-                  AdaptiveTheme.of(context).setDark();
-                } else {
-                  AdaptiveTheme.of(context).setLight();
-                }
-              },
-            ),
+                activeTrackColor: Colors.green,
+                activeColor: Colors.white,
+                value: isDarkMode,
+                onChanged: (value) {
+                  setState(() {
+                    if (value) {
+                      AdaptiveTheme.of(context).setDark();
+                    } else {
+                      AdaptiveTheme.of(context).setLight();
+                    }
+                  });
+                }),
           ),
           ZoomTapAnimation(
             onTap: () {
@@ -54,7 +60,6 @@ class DrawerWidget extends StatelessWidget {
               trailing: Icon(Icons.arrow_forward_ios_rounded),
             ),
           ),
-          
         ],
       ),
     );

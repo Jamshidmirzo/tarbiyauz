@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:marquee/marquee.dart';
 import 'package:tarbiyauz/core/constants/app_constants.dart';
 import 'package:tarbiyauz/core/constants/app_dimens.dart';
+import 'package:tarbiyauz/core/widgets/error_widget.dart';
 import 'package:tarbiyauz/core/widgets/loading_widget.dart';
 import 'package:tarbiyauz/features/computer_screens/home/presentation/bloc/bloc/home_bloc.dart';
 import 'package:tarbiyauz/features/phone_pages/home_phone/presentation/widgets/appbar_phone_widget.dart';
@@ -50,12 +51,12 @@ class _HomePhoneScreenState extends State<HomePhoneScreen> {
             ),
           ),
           AppbarPhoneWidget(scrollController: _scrollController),
-          const SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.all(AppDimens.PADDING_20),
-              child: MainNewsPhoneWidget(),
-            ),
-          ),
+          // const SliverToBoxAdapter(
+          //   child: Padding(
+          //     padding: EdgeInsets.all(AppDimens.PADDING_20),
+          //     child: MainNewsPhoneWidget(),
+          //   ),
+          // ),
           BlocBuilder<HomeBloc, HomeState>(
             builder: (context, state) {
               if (state.status == Status.Loading) {
@@ -66,7 +67,7 @@ class _HomePhoneScreenState extends State<HomePhoneScreen> {
 
               if (state.status == Status.Error) {
                 return const SliverToBoxAdapter(
-                  child: Center(child: Text('Failed to load tweets.')),
+                  child: CustomErrorWidget(),
                 );
               }
 

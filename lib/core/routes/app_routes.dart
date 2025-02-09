@@ -5,11 +5,12 @@ import 'package:tarbiyauz/core/widgets/bottom_nav_bar.dart';
 import 'package:tarbiyauz/features/computer_screens/home/presentation/pages/home_screen.dart';
 import 'package:tarbiyauz/features/computer_screens/news/presentation/pages/about_news_screen.dart';
 import 'package:tarbiyauz/features/computer_screens/news/presentation/pages/about_video_news_screen.dart';
+import 'package:tarbiyauz/features/computer_screens/news/presentation/pages/news_by_category_screen.dart';
 import 'package:tarbiyauz/features/computer_screens/news/presentation/pages/search_result_screen.dart';
 
 GoRouter createRouter(BuildContext context) {
   final double screenWidth = MediaQuery.of(context).size.width;
-  final bool isPhone = screenWidth <= 600;
+  final bool isPhone = screenWidth <= 450;
 
   return GoRouter(
     initialLocation: isPhone ? Routes.bottomnavbar : Routes.homeScreen,
@@ -18,8 +19,16 @@ GoRouter createRouter(BuildContext context) {
         path: '${Routes.aboutNewsScreen}/:id',
         name: Routes.aboutNewsScreen,
         builder: (context, state) {
-          final id = state.pathParameters['id']; 
+          final id = state.pathParameters['id'];
           return AboutNewsScreen(id: id!);
+        },
+      ),
+      GoRoute(
+        path: '${Routes.aboutCategoryScreen}/:category',
+        name: Routes.aboutCategoryScreen,
+        builder: (context, state) {
+          final id = state.pathParameters['category'];
+          return NewsByCategoryScreen(category: id!);
         },
       ),
       GoRoute(

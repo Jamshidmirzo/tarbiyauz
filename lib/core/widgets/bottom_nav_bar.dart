@@ -24,7 +24,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
   List screens = [
     const HomePhoneScreen(),
     const NewsPhoneScreen(),
-    const VideoPhoneScreen(),
+    // const VideoPhoneScreen(),
     MorePhoneScreen()
   ];
 
@@ -73,11 +73,11 @@ class _BottomNavBarState extends State<BottomNavBar> {
                 iconPath: 'assets/icons/news_icon.png', index: 1),
             label: '',
           ),
-          BottomNavigationBarItem(
-            icon: buildNavBarItem(
-                iconPath: 'assets/icons/video_icon.png', index: 2),
-            label: '',
-          ),
+          // BottomNavigationBarItem(
+          //   icon: buildNavBarItem(
+          //       iconPath: 'assets/icons/video_icon.png', index: 2),
+          //   label: '',
+          // ),
           BottomNavigationBarItem(
             icon: buildNavBarItem(
                 iconPath: 'assets/icons/more_icon.png', index: 3),

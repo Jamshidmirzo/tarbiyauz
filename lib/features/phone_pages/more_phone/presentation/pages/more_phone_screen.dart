@@ -2,18 +2,26 @@
 
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tarbiyauz/core/constants/app_dimens.dart';
 import 'package:tarbiyauz/core/extension/extensions.dart';
+import 'package:tarbiyauz/features/computer_screens/home/presentation/bloc/bloc/home_bloc.dart';
 import 'package:tarbiyauz/features/phone_pages/home_phone/presentation/widgets/appbar_phone_widget.dart';
 import 'package:tarbiyauz/features/phone_pages/home_phone/presentation/widgets/bottom_sheet_for_lang.dart';
 import 'package:tarbiyauz/features/phone_pages/home_phone/presentation/widgets/bottom_sheet_for_mode.dart';
-import 'package:tarbiyauz/features/phone_pages/more_phone/presentation/widgets/categories_widget.dart';
 import 'package:tarbiyauz/features/phone_pages/more_phone/presentation/widgets/settings_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class MorePhoneScreen extends StatelessWidget {
+class MorePhoneScreen extends StatefulWidget {
   MorePhoneScreen({super.key});
+
+  @override
+  State<MorePhoneScreen> createState() => _MorePhoneScreenState();
+}
+
+class _MorePhoneScreenState extends State<MorePhoneScreen> {
   final ScrollController _scrollController = ScrollController();
+
   final List categories = [
     'O\'zbekiston',
     'Jahon',
@@ -24,7 +32,8 @@ class MorePhoneScreen extends StatelessWidget {
     'Nuqtai nazar',
     'Audio'
   ];
-  final List settings = ['Ilova tili', 'Ilova holati', 'Bog`lanish'];
+
+  final List settings = ['Ilova holati', 'Bog`lanish'];
 
   List<String> viloyatlar = [
     'Andijon',
@@ -41,6 +50,7 @@ class MorePhoneScreen extends StatelessWidget {
     'Xorazm',
     'Qoraqalpogʻiston Respublikasi'
   ];
+
   openBottomForLang(BuildContext context) {
     showModalBottomSheet(
         context: context, builder: (context) => const BottomSheetForLang());
@@ -64,6 +74,12 @@ class MorePhoneScreen extends StatelessWidget {
   }
 
   @override
+  void initState() {
+    super.initState();
+    context.read<HomeBloc>().add(GetTypesEvent());
+  }
+
+  @override
   Widget build(BuildContext context) {
     final List icons = [
       Icons.language,
@@ -78,14 +94,34 @@ class MorePhoneScreen extends StatelessWidget {
         child: CustomScrollView(
           slivers: [
             AppbarPhoneWidget(scrollController: _scrollController),
-            SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  return CategoriesWidget(text: categories[index]);
-                },
-                childCount: categories.length,
-              ),
-            ),
+            // BlocBuilder<HomeBloc, HomeState>(
+            //   builder: (context, state) {
+            //     if (state.status == Status.Loading) {
+            //       return const SliverToBoxAdapter(
+            //         child: LoadingWidget(),
+            //       );
+            //     }
+
+            //     if (state.status == Status.Error) {
+            //       return const SliverToBoxAdapter(
+            //         child: CustomErrorWidget(),
+            //       );
+            //     }
+            //     if (state.status == Status.Success) {
+            //       final categories = state.types ?? [];
+            //       return SliverList(
+            //         delegate: SliverChildBuilderDelegate(
+            //           (context, index) {
+            //             return CategoriesWidget(text: categories[index]);
+            //           },
+            //           childCount: categories.length,
+            //         ),
+            //       );
+            //     }
+            //     return SliverToBoxAdapter(child: Container());
+            //   },
+            // ),
+
             SliverToBoxAdapter(
               child: 20.hs(),
             ),
@@ -103,13 +139,13 @@ class MorePhoneScreen extends StatelessWidget {
                     childCount: settings.length, (context, index) {
               return SettingsWidget(
                 onTap: () {
+                  // if (index == 0) {
+                  //   openBottomForLang(context);
+                  // }
                   if (index == 0) {
-                    openBottomForLang(context);
-                  }
-                  if (index == 1) {
                     openBottomForMode(context);
                   }
-                  if (index == 2) {
+                  if (index == 1) {
                     connect(context);
                   }
                 },

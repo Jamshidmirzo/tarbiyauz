@@ -151,7 +151,12 @@ class _CustomAppBarState extends State<CustomAppBar> {
               children: categories.map((category) {
                 return Flexible(
                   child: ZoomTapAnimation(
-                    onTap: () {},
+                    onTap: () {
+                      context.go('${Routes.aboutCategoryScreen}/$category');
+                      context
+                          .read<HomeBloc>()
+                          .add(GetByTypeTwitesEvent(type: category));
+                    },
                     child: Text(category, style: TextStyle(fontSize: fontSize)),
                   ),
                 );
@@ -203,8 +208,9 @@ class _CustomAppBarState extends State<CustomAppBar> {
           children: [
             IconButton(
                 onPressed: () {
+                  context.read<HomeBloc>().add(
+                      GetBySearchTwitesEvent(title: _searchController.text));
                   context.go(Routes.searchResult);
-                  // context.read<HomeBloc>().add();
                 },
                 icon: Icon(Icons.search, color: Colors.grey[600])),
             const SizedBox(width: 8),
@@ -212,6 +218,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
               child: TextFormField(
                 style: const TextStyle(color: Colors.black),
                 onFieldSubmitted: (value) {
+                  context.read<HomeBloc>().add(
+                      GetBySearchTwitesEvent(title: _searchController.text));
                   context.go(Routes.searchResult);
                 },
                 controller: _searchController,

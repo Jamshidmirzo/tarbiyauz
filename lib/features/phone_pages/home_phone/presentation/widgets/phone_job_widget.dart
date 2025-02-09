@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:tarbiyauz/core/widgets/get_date_widget.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
 import 'package:tarbiyauz/core/constants/app_dimens.dart';
@@ -23,7 +24,8 @@ class PhoneJobWidget extends StatelessWidget {
         Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => AboutNewsScreen(id: '',
+              builder: (context) => AboutNewsScreen(
+                id: twitModel.id,
               ),
             ));
       },
@@ -41,7 +43,7 @@ class PhoneJobWidget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    twitModel.texts,
+                    twitModel.title,
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 14,
@@ -50,10 +52,7 @@ class PhoneJobWidget extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                   4.hs(),
-                  Text(
-                    '${date.day}.${date.month}.${date.year}',
-                    style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-                  ),
+                  GetDateWidget(type: twitModel.createdAt)
                 ],
               ),
             ),

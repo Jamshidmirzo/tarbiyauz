@@ -4,7 +4,6 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
@@ -12,12 +11,14 @@ import 'package:tarbiyauz/core/colors/app_color.dart';
 import 'package:tarbiyauz/core/constants/app_constants.dart';
 import 'package:tarbiyauz/core/constants/app_dimens.dart';
 import 'package:tarbiyauz/core/extension/extensions.dart';
-import 'package:tarbiyauz/core/routes/routes.dart';
 import 'package:tarbiyauz/core/widgets/error_widget.dart';
 import 'package:tarbiyauz/core/widgets/loading_widget.dart';
 import 'package:tarbiyauz/features/computer_screens/home/data/model/twit_model.dart';
 import 'package:tarbiyauz/features/computer_screens/home/presentation/bloc/bloc/home_bloc.dart';
 import 'package:tarbiyauz/features/computer_screens/home/presentation/widgets/appbar_widget.dart';
+import 'package:tarbiyauz/features/phone_pages/home_phone/presentation/widgets/app_bar_phone_widget.dart';
+import 'package:tarbiyauz/features/phone_pages/home_phone/presentation/widgets/appbar_phone_widget.dart';
+import 'package:tarbiyauz/features/phone_pages/home_phone/presentation/widgets/phone_job_widget.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 // import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
@@ -65,7 +66,7 @@ class _AboutNewsScreenState extends State<AboutNewsScreen> {
 
     return Scaffold(
         appBar: isSmallScreen
-            ? null
+            ? const AppBarPhoneWidgetReal()
             : CustomAppBar(
                 scrollController: scrollController, onPressed: () {}),
         body: BlocBuilder<HomeBloc, HomeState>(
@@ -78,6 +79,7 @@ class _AboutNewsScreenState extends State<AboutNewsScreen> {
             }
             if (state.status == Status.Success) {
               final twit = state.twit;
+              log(twit.toString());
               return twit == null
                   ? const Center(
                       child: Text('ERROR'),
@@ -99,21 +101,51 @@ class _AboutNewsScreenState extends State<AboutNewsScreen> {
       slivers: [
         SliverToBoxAdapter(
           child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: screenWidth * 0.05,
-              vertical: screenHeight * 0.07,
-            ),
+            padding: const EdgeInsets.all(16), // Simplified padding
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                _buildImage(
+                    context,
+                    twit.photos.isNotEmpty
+                        ? twit.photos.first.photoUrl
+                        : 'https://via.placeholder.com/150'),
+                const SizedBox(height: 16),
                 _buildTitleText(title: twit.title),
                 const SizedBox(height: 16),
                 _buildDescriptionText(texts: twit.texts),
                 const SizedBox(height: 16),
-                _buildImage(context, twit.photos.first.photoUrl),
+                _buildTitleText(title: 'Eng Saralari'),
               ],
             ),
           ),
+        ),
+        BlocBuilder<HomeBloc, HomeState>(
+          builder: (context, state) {
+            if (state.status == Status.Success) {
+              final latest = state.mostVievedTwites ?? [];
+              return SliverToBoxAdapter(
+                child: SizedBox(
+                  height: screenHeight * 0.5,
+                  child: ListView.builder(
+                    padding: EdgeInsets.only(left: screenWidth * 0.01),
+                    itemCount: latest.length,
+                    itemBuilder: (context, index) {
+                      final last = latest[index];
+                      return PhoneJobWidget(twitModel: last);
+                    },
+                  ),
+                ),
+              );
+            }
+            if (state.status == Status.Loading) {
+              return const SliverToBoxAdapter(child: LoadingWidget());
+            }
+            if (state.status == Status.Error) {
+              return const SliverToBoxAdapter(child: CustomErrorWidget());
+            }
+            return const SliverToBoxAdapter(child: SizedBox.shrink());
+          },
         ),
         const SliverToBoxAdapter(child: SizedBox(height: 16)),
       ],

@@ -109,52 +109,47 @@ class HomeDataSources {
     } catch (e) {
       throw ServerExcepiton();
     }
-    // log('HEllloogogogoogsdfghjkLATEEEST');
-    // log('${AppConstants.baseUrl}twit/all');
-    // List<TwitModel> twites = [];
-    // try {
-    //   final response = await dio.get(
-    //       '${AppConstants.baseUrl}twit/latest-uploaded',
-    //       queryParameters: {"limit": limit ?? 10});
-    //   if (response.statusCode == 200) {
-    //     for (var element in response.data) {
-    //       twites.add(await getById(element));
-    //     }
-    //     return twites;
-    //   } else {
-    //     throw ServerExcepiton();
-    //   }
-    // } on DioException catch (e) {
-    //   print('Error during API request: $e');
-    //   throw ServerExcepiton();
-    // } catch (e) {
-    //   print('An unknown error occurred: $e');
-    //   throw ServerExcepiton();
-    // }
   }
 
   Future<List<TwitModel>> getByTypeTwites(String type) async {
+    log('TYPEGA KIRDI: $type');
     List<TwitModel> twites = [];
     try {
-      final response = await dio.get(
-        '${AppConstants.baseUrl}twit/type/$type',
-      );
+      final response = await dio.get('${AppConstants.baseUrl}twit/type/$type');
+
+      log('Response Data: ${response.data}');
+      log('Response Type: ${response.data.runtimeType}');
+      log('Status Code: ${response.statusCode}');
+
       if (response.statusCode == 200) {
-        for (var element in response.data) {
-          twites.add(await getById(element));
+        if (response.data is List) {
+          final List<String> ids = List<String>.from(response.data);
+
+          // Fetch all TwitModels in parallel
+          twites = await Future.wait(ids.map((id) async {
+            log('Fetching twit for ID: $id');
+            return getById(id);
+          }));
+
+          return twites;
+        } else {
+          log('Unexpected response format!');
+          throw ServerExcepiton();
         }
-        return twites;
       } else {
         throw ServerExcepiton();
       }
-    } on DioException {
+    } on DioException catch (e) {
+      log('Dio Exception: ${e.message}');
       throw ServerExcepiton();
     } catch (e) {
+      log('Other Exception: $e');
       throw ServerExcepiton();
     }
   }
 
   Future<List<TwitModel>> searchTwites(String title) async {
+    log('SEARCH CAMEEE');
     List<TwitModel> twites = [];
     try {
       final response = await dio.get('${AppConstants.baseUrl}twit/search',
