@@ -12,6 +12,19 @@ class HomeDataSources {
     required this.dio,
   });
 
+  Future<TwitModel> getMainTweet() async {
+    try {
+      final response = await dio.get('${AppConstants.baseUrl}twit/main');
+      if (response.statusCode == 200) {
+        return TwitModel.fromJson(response.data);
+      } else {
+        throw ServerExcepiton();
+      }
+    } on DioException {
+      throw ServerExcepiton();
+    }
+  }
+
   Future<List<TwitModel>> getAllTwites() async {
     List<TwitModel> twites = [];
     try {
@@ -154,10 +167,15 @@ class HomeDataSources {
     try {
       final response = await dio.get('${AppConstants.baseUrl}twit/search',
           queryParameters: {"keyword": title});
+
+      log(response.statusCode.toString());
+      log(response.data.toString());
+
       if (response.statusCode == 200) {
         for (var element in response.data) {
           twites.add(await getById(element));
         }
+        log(twites.toString());
         return twites;
       } else {
         throw ServerExcepiton();

@@ -80,4 +80,14 @@ class HomeRepositoriesImpl extends HomeRepostiories {
       return Left(ServerFailure());
     }
   }
+
+  @override
+  Future<Either<Failure, TwitModel>> getMainTweet() async {
+    try {
+      final responce = await homeDataSources.getMainTweet();
+      return Right(responce);
+    } catch (e) {
+      return Left(ServerFailure());
+    }
+  }
 }

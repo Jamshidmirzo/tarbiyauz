@@ -28,6 +28,7 @@ class _IsComputerWidgetState extends State<IsComputerWidget> {
     context.read<HomeBloc>().add(GetTypesEvent());
     context.read<HomeBloc>().add(GetAllTwitesEvent());
     context.read<HomeBloc>().add(GetLatestTwitesEvent());
+    context.read<HomeBloc>().add(GetMainTwitesEvent());
   }
 
   @override
@@ -49,41 +50,66 @@ class _IsComputerWidgetState extends State<IsComputerWidget> {
               child: CustomScrollView(
                 controller: widget.scrollController,
                 slivers: [
-                  // SliverToBoxAdapter(
-                  //   child: Container(
-                  //     height: MediaQuery.of(context).size.height * 0.5,
-                  //     decoration: BoxDecoration(
-                  //       border: Border.all(
-                  //         color: Theme.of(context).brightness == Brightness.dark
-                  //             ? const Color(0xFFF8F8F8)
-                  //             : Colors.black,
-                  //       ),
-                  //       borderRadius:
-                  //           BorderRadius.circular(AppDimens.BORDER_RADIUS_20),
-                  //     ),
-                  //     child: LayoutBuilder(
-                  //       builder: (context, constraints) {
-                  //         return Column(
-                  //           crossAxisAlignment: CrossAxisAlignment.start,
-                  //           children: [
-                  //             Padding(
-                  //               padding:
-                  //                   const EdgeInsets.all(AppDimens.PADDING_20),
-                  //               child: Text(
-                  //                 'Minim occaecat consequat commodo dolor anim labore reprehenderit do ut. Esse id eiusmod ea esse est ut. Cupidatat cillum adipisicing.',
-                  //                 style: TextStyle(
-                  //                   fontWeight: FontWeight.bold,
-                  //                   fontSize: fontSize,
-                  //                 ),
-                  //               ),
-                  //             ),
-                  //           ],
-                  //         );
-                  //       },
-                  //     ),
-                  //   ),
-                  // ),
-                  // const SliverPadding(padding: EdgeInsets.only(top: 20)),
+                  BlocBuilder<HomeBloc, HomeState>(
+                    builder: (context, state) {
+                      if (state.status == Status.Error) {
+                        return const SliverToBoxAdapter(
+                            child: CustomErrorWidget());
+                      }
+                      if (state.status == Status.Loading) {
+                        return const SliverToBoxAdapter(child: LoadingWidget());
+                      }
+                      if (state.status == Status.Success) {
+                        final twit = state.mainTwit;
+                        return twit == null
+                            ? const SliverToBoxAdapter(
+                                child: CustomErrorWidget())
+                            : SliverToBoxAdapter(
+                                child: Container(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.5,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? const Color(0xFFF8F8F8)
+                                          : Colors.black,
+                                    ),
+                                    borderRadius: BorderRadius.circular(
+                                        AppDimens.BORDER_RADIUS_20),
+                                  ),
+                                  child: LayoutBuilder(
+                                    builder: (context, constraints) {
+                                      return Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.all(
+                                                AppDimens.PADDING_20),
+                                            child: Text(
+                                              twit.texts,
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: fontSize,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                ),
+                              );
+                      }
+                      return const SliverToBoxAdapter(
+                        child: Center(
+                          child: Text('ERROR'),
+                        ),
+                      );
+                    },
+                  ),
+                  const SliverPadding(padding: EdgeInsets.only(top: 20)),
                   BlocBuilder<HomeBloc, HomeState>(
                     builder: (context, state) {
                       if (state.status == Status.Loading) {

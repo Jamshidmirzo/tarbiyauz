@@ -8,6 +8,7 @@ import 'package:tarbiyauz/features/computer_screens/home/domain/usecase/get_all_
 import 'package:tarbiyauz/features/computer_screens/home/domain/usecase/get_by_id_twites_usecase.dart';
 import 'package:tarbiyauz/features/computer_screens/home/domain/usecase/get_by_type_twites_usecase.dart';
 import 'package:tarbiyauz/features/computer_screens/home/domain/usecase/get_last_twites_usecase.dart';
+import 'package:tarbiyauz/features/computer_screens/home/domain/usecase/get_main_tweet_usecase.dart';
 import 'package:tarbiyauz/features/computer_screens/home/domain/usecase/get_most_viewed_usecase.dart';
 import 'package:tarbiyauz/features/computer_screens/home/domain/usecase/get_types_usecase.dart';
 import 'package:tarbiyauz/features/computer_screens/home/domain/usecase/search_twites_usecase.dart';
@@ -39,6 +40,9 @@ Future<void> init() async {
       () => SearchTwitesUsecase(homeRepostiories: sl<HomeRepositoriesImpl>()));
 
   sl.registerCachedFactory(
+      () => GetMainTweetUsecase(homeRepostiories: sl<HomeRepositoriesImpl>()));
+
+  sl.registerCachedFactory(
       () => GetTypesUsecase(homeRepostiories: sl<HomeRepositoriesImpl>()));
   sl.registerCachedFactory(() => HomeBloc(
         sl<GetAllTwitesUsecase>(),
@@ -48,5 +52,6 @@ Future<void> init() async {
         sl<GetMostViewedUsecase>(),
         sl<SearchTwitesUsecase>(),
         sl<GetTypesUsecase>(),
+        sl<GetMainTweetUsecase>(),
       ));
 }

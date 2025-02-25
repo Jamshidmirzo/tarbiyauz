@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tarbiyauz/core/constants/app_constants.dart';
+import 'package:tarbiyauz/core/widgets/empty_widget.dart';
 import 'package:tarbiyauz/core/widgets/error_widget.dart';
 import 'package:tarbiyauz/core/widgets/loading_widget.dart';
 import 'package:tarbiyauz/features/computer_screens/home/presentation/bloc/bloc/home_bloc.dart';
@@ -46,6 +47,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                   sliver: BlocBuilder<HomeBloc, HomeState>(
                     builder: (context, state) {
                       log(state.toString());
+                      log(state.status.toString());
                       if (state.status == Status.Loading) {
                         return const SliverToBoxAdapter(
                           child: LoadingWidget(),
@@ -60,11 +62,13 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
 
                       if (state.status == Status.Success) {
                         final twites = state.searchedResultTwites ?? [];
-
-                        ///EMTY WIDGET
+                        log(twites.toString());
                         if (twites.isEmpty) {
                           return const SliverToBoxAdapter(
-                              child: CustomErrorWidget());
+                              child: SizedBox(
+                                  height: 120,
+                                  width: 120,
+                                  child: EmptyWidget()));
                         }
 
                         return SliverGrid(

@@ -176,31 +176,47 @@ class _AboutNewsScreenState extends State<AboutNewsScreen> {
                 ),
                 Row(
                   children: [
-                    _buildTitleText(
-                        fontSize: fontSize * 1.2, title: twit.title),
                     const Spacer(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Icon(
-                          LucideIcons.eye,
-                          color: Colors.white.withOpacity(0.9),
-                          size: 18,
-                        ),
-                        const SizedBox(width: 5),
-                        Text(
-                          '${twit.readersCount} views',
-                          style: TextStyle(
-                            color: Colors.white.withOpacity(0.9),
-                            fontSize: 13,
+                    SizedBox(
+                      width: screenWidth / 2,
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                flex: 3,
+                                child: _buildTitleText(
+                                    fontSize: fontSize * 1.2,
+                                    title: twit.title),
+                              ),
+                              const Spacer(),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Icon(
+                                    LucideIcons.eye,
+                                    color: Colors.white.withOpacity(0.9),
+                                    size: 18,
+                                  ),
+                                  const SizedBox(width: 5),
+                                  Text(
+                                    '${twit.readersCount} views',
+                                    style: TextStyle(
+                                      color: Colors.white.withOpacity(0.9),
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
-                    ),
+                          _buildDescriptionText(
+                              fontSize: fontSize * 1, texts: twit.texts),
+                        ],
+                      ),
+                    )
                   ],
-                ),
-                _buildDescriptionText(
-                    fontSize: fontSize * 1, texts: twit.texts),
+                )
               ],
             ),
           ),
@@ -248,6 +264,7 @@ class _AboutNewsScreenState extends State<AboutNewsScreen> {
                           //     .replace('${Routes.aboutNewsScreen}/${last.id}');
                         },
                         child: Container(
+                          height: screenWidth * 0.3,
                           width: screenWidth * 0.3,
                           margin: const EdgeInsets.symmetric(horizontal: 8.0),
                           decoration: BoxDecoration(
